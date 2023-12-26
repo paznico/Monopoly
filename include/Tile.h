@@ -1,5 +1,5 @@
-#ifndef CASELLA_H
-#define CASELLA_H
+#ifndef TILE_H
+#define TILE_H
 
 #include "Player.h"
 
@@ -9,48 +9,29 @@ class Tile
         int status;
         Player& owner;
 
-
     public:
 
         /* Constructors */
-        Tile(void);             // default 
-        Tile(Tile&);            // copy
-        Tile(Tile&&);           // move
-        
+        // Default
+        Tile(void);
+        // Copia
+        Tile(Tile&);
+        // Spostamento
+        Tile(Tile&&);
 
         /* Getters */
-        Player& get_owner(void) { return owner; }
-        int get_status(void) { return status; }
+        const Player& get_owner(void) const;
+        int get_status(void) const;
 
         /* Set functions */
         void set_owner(Player&);
+        // ?
         void set_status(Player&);
+        // ?
         virtual void buy_property(const Player&) = 0;
         virtual void build_house(const Player&) = 0;
         virtual void build_hotel(const Player&) = 0;
 
-
-        
 };
-
-
-
-// Casella:
-//     Variabili
-//         Costanti (pubbliche)
-//         Player owner
-//         int status
-//             0 free
-//             1 bought property
-//             2 house
-//             3 hotel
-
-//     Funzioni
-//         get_owner
-//         set_owner
-//         get_status
-//         buy_property(const Player&)
-//         build_house
-//         build_hotel
 
 #endif
