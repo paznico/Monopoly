@@ -22,53 +22,35 @@ class TileCheap: public Tile
 
     public:
         /* Costanti di classe */
-        // Costo acquisto terreno
-        const unsigned int cost_terrain = 6;
-        // Costo costruzione casa
-        const unsigned int cost_house = 3;
-        // Costo costruzione hotel
-        const unsigned int cost_hotel = 3;
-        // Costo pernottamento con casa
-        const unsigned int rent_house = 2;
-        // Costo pernottamento con hotel
-        const unsigned int rent_hotel = 4;
+        const unsigned int cost_terrain = 6;                        // Costo acquisto terreno
+        const unsigned int cost_house = 3;                          // Costo costruzione casa
+        const unsigned int cost_hotel = 3;                          // Costo costruzione hotel
+        const unsigned int rent_house = 2;                          // Costo pernottamento con casa
+        const unsigned int rent_hotel = 4;                          // Costo pernottamento con hotel
 
         /* Costruttori di classe */
-        // Default
-        TileCheap(void);
-        // Copia
-        TileCheap(TileCheap&);
-        // Spostamento
-        TileCheap(TileCheap&&);
+        TileCheap(void);                                            // Default
+        TileCheap(TileCheap&);                                      // Copia
+        TileCheap(TileCheap&&);                                     // Spostamento
 
         /* Operator overloading */
-        // Assegnamento di copia
-        TileCheap& operator=(const TileCheap&);
-        // Assegnamento di spostamento
-        TileCheap& operator=(TileCheap&&);
+        TileCheap& operator=(const TileCheap&);                     // Assegnamento di copia
+        TileCheap& operator=(TileCheap&&);                          // Assegnamento di spostamento
 
         /* Getters di classe */
-        // Ritorna proprietario
-        const Player& get_owner(void) const;
-        // Ritorna lo stato della proprietà
-        const unsigned int get_statut(void) const;
+        const Player& get_owner(void) const;                        // Ritorna proprietario
+        const unsigned int get_statut(void) const;                  // Ritorna lo stato della proprietà
 
         /* Funzioni di classe */
-        // Acquista proprietà se disponibile
-        void buy_property(const Player&) override;
-        // Costruisce casa, se il giocatore possiede la proprietà
-        void build_house(const Player&) override;
-        // Costruisce albergo, se il giocatore possiede una casa
-        void build_hotel(const Player&) override;
-        // Resetta la casella
-        void reset(void) override;
+        void buy_property(const Player&) override;                  // Acquista proprietà se disponibile
+        void build_house(const Player&) override;                   // Costruisce casa, se il giocatore possiede la proprietà
+        void build_hotel(const Player&) override;                   // Costruisce albergo, se il giocatore possiede una casa
 
         /* Distruttore di classe */
         ~TileCheap();
 };
 
 /* Operator overloading */
-// Output su stream
-std::ostream& operator<<(std::ostream&, const TileCheap&);
+std::ostream& operator<<(std::ostream&, const TileCheap&);          // Output su stream
 
 #endif

@@ -1,26 +1,57 @@
-#ifndef STANDARDTILE_H
-#define STANDARDTILE_H
+/*
+ * Autore file: Leonardo Mosele
+ */
+#ifndef STANDARD_TILE_H
+#define STANDARD_TILE_H
 
+#include <iostream>
 #include "Tile.h"
 
-class StandardTile : public Tile 
+/*
+ * Classe che descrive una casella di tipo 'standard' del Monopoly.
+ * Eredita i metodi base dalla classe madre 'Tile.h', sovrascrivendo
+ * quelli necessari.
+ */
+class TileStandard: public Tile 
 {
     private:
-        const int level_0 = 10;         // Cost buy property
-        const int level_1 = 5;          // Cost upgrade to house
-        const int level_2 = 5;          // Cost upgrade to hotel
-
-        const int sleep_1 = 4;          // Cost sleeping in house
-        const int sleep_2 = 8;          // Cost sleeping in hotel
+    /*
+        Player* owner;
+        unsigned int status;
+    */
 
     public:
-        StandardTile(void);
-        StandardTile(StandardTile&);
-        StandardTile(StandardTile&&);
+        /* Costanti di classe */
+        const unsigned int cost_terrain = 10;                       // Costo acquisto terreno
+        const unsigned int cost_house = 5;                          // Costo costruzione casa
+        const unsigned int cost_hotel = 5;                          // Costo costruzione hotel
+        const unsigned int rent_house = 4;                          // Costo pernottamento con casa
+        const unsigned int rent_hotel = 8;                          // Costo pernottamento con hotel
 
-        void buy_property(const Player&) override;
-        void build_house(const Player&) override;
-        void build_hotel(const Player&) override;
+        /* Costruttori di classe */
+        TileStandard(void);                                         // Default
+        TileStandard(TileStandard&);                                // Copia
+        TileStandard(TileStandard&&);                               // Spostamento
+
+        /* Operator overloading */
+        TileStandard& operator=(const TileStandard&);               // Assegnamento di copia
+        TileStandard& operator=(TileStandard&&);                    // Assegnamento di spostamento
+
+        /* Getters di classe */
+        
+        const Player& get_owner(void) const;                        // Ritorna proprietario
+        const unsigned int get_status(void) const;                  // Ritorna lo stato della proprietà
+
+        /* Funzioni di classe */
+        void buy_property(const Player&) override;                  // Acquista proprietà se disponibile
+        void build_house(const Player&) override;                   // Costruisce casa, se il giocatore possiede la proprietà
+        void build_hotel(const Player&) override;                   // Costruisce albergo, se il giocatore possiede una casa
+
+        /* Distruttore di classe */
+        ~TileStandard();
 };
+
+/* Operator overloading */
+std::ostream& operator<<(std::ostream&, const TileStandard&);       // Output su stream
 
 #endif

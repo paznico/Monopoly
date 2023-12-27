@@ -1,8 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Player.h"
-
 class Player 
 {
     private:

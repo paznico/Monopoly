@@ -22,53 +22,35 @@ class TileLuxury: public Tile
 
     public:
         /* Costanti di classe */
-        // Costo acquisto terreno
-        const unsigned int cost_terrain = 20;
-        // Costo costruzione casa
-        const unsigned int cost_house = 10;
-        // Costo costruzione hotel
-        const unsigned int cost_hotel = 10;
-        // Costo pernottamento con casa
-        const unsigned int rent_house = 7;
-        // Costo pernottamento con hotel
-        const unsigned int rent_hotel = 14;
+        const unsigned int cost_terrain = 20;                   // Costo acquisto terreno
+        const unsigned int cost_house = 10;                     // Costo costruzione casa
+        const unsigned int cost_hotel = 10;                     // Costo costruzione hotel
+        const unsigned int rent_house = 7;                      // Costo pernottamento con casa
+        const unsigned int rent_hotel = 14;                     // Costo pernottamento con hotel
 
         /* Costruttori di classe */
-        // Default
-        TileLuxury(void);
-        // Copia
-        TileLuxury(TileLuxury&);
-        // Spostamento
-        TileLuxury(TileLuxury&&);
+        TileLuxury(void);                                       // Default
+        TileLuxury(TileLuxury&);                                // Copia
+        TileLuxury(TileLuxury&&);                               // Spostamento
 
         /* Operator overloading */
-        // Assegnamento di copia
-        TileLuxury& operator=(const TileLuxury&);
-        // Assegnamento di spostamento
-        TileLuxury& operator=(TileLuxury&&);
+        TileLuxury& operator=(const TileLuxury&);               // Assegnamento di copia
+        TileLuxury& operator=(TileLuxury&&);                    // Assegnamento di spostamento
 
         /* Getters di classe */
-        // Ritorna proprietario
-        const Player& get_owner(void) const;
-        // Ritorna lo stato della proprietà
-        const unsigned int get_statut(void) const;
+        
+        const Player& get_owner(void) const;                    // Ritorna proprietario
+        const unsigned int get_status(void) const;              // Ritorna lo stato della proprietà
 
         /* Funzioni di classe */
-        // Acquista proprietà se disponibile
-        void buy_property(const Player&) override;
-        // Costruisce casa, se il giocatore possiede la proprietà
-        void build_house(const Player&) override;
-        // Costruisce albergo, se il giocatore possiede una casa
-        void build_hotel(const Player&) override;
-        // Resetta la casella
-        void reset(void) override;
-
+        void buy_property(const Player&) override;              // Acquista proprietà se disponibile
+        void build_house(const Player&) override;               // Costruisce casa, se il giocatore possiede la proprietà
+        void build_hotel(const Player&) override;               // Costruisce albergo, se il giocatore possiede una casa
         /* Distruttore di classe */
         ~TileLuxury();
 };
 
 /* Operator overloading */
-// Output su stream
-std::ostream& operator<<(std::ostream&, const TileLuxury&);
+std::ostream& operator<<(std::ostream&, const TileLuxury&);     // Output su stream
 
 #endif
