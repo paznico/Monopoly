@@ -6,7 +6,7 @@
 class Robot : public Player 
 {
     private:
-        int balance;
+        // altro
 
     public:
         

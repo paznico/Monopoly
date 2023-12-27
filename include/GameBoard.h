@@ -7,8 +7,7 @@
 class GameBoard
 {
     public:
-        // std::vector<Tile> tiles;         THIS OR THE NEXT ONE PAZ???????????????!
-        // Tile gameboard[28];
+        std::vector<Tile> tiles;
 
     private:
         /* Constructor */

@@ -1,9 +1,14 @@
+/*
+ * Autore file: Leonardo Mosele
+ */
+
 #ifndef PLAYER_H
 #define PLAYER_H
 
 class Player 
 {
-    private:
+    protected:
+        const unsigned int initial_balance = 100;
         int balance;
 
     public:
@@ -17,7 +22,7 @@ class Player
         ~Player();
         
         /* Getters */
-        int get_balance(void) { return balance; }
+        int get_balance(void);
 
         /* Setters */
         void set_balance();
