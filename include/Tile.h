@@ -1,35 +1,55 @@
 /*
- * Autore file: Davide Saladino
- */
+* Author: Davide Saladino
+*/
 #ifndef TILE_H
 #define TILE_H
 
-#include "Player.h"
+#include <iostream>
 #include <memory>
+#include "../Player/Player.h"
+#include "../Constants.h"
+#include "BaseTile.h"
 
-class Tile
-{
-    protected:
-        int status;
-        std::shared_ptr<Player> owner;
+/*
+* ----------------------- Tile template class -----------------------
+* The template seems to be the best solution to avoid code duplication
+* and fits perfectly with the idea of having different types of tiles
+* -------------------------------------------------------------------
+*/
 
-    public:
+template <typename EnumType>
+class Tile : public BaseTile{
+public:
+    Tile();
+    Tile(const Tile&);
+    Tile(Tile&&);
 
-        Tile(void);                                     // Default constructor
-        Tile(Tile&) = delete;                           // Deleted copy constructor
-        Tile& operator=(const Tile&) = delete;          // Deleted copy assignment
-        virtual ~Tile() {}                              // Virtual destructor
+    unsigned int get_status(void) const override;
+    Player& get_owner(void) const override;
 
-        /* Getters */
-        const Player& get_owner(void) const;
-        int get_status(void) const;
+    Tile& operator=(const Tile&);
+    Tile& operator=(Tile&&);
 
-        /* Setters */
-        virtual void buy_property(const Player&) = 0;
-        virtual void build_house(const Player&) = 0;
-        virtual void build_hotel(const Player&) = 0;
+    void buy_terrain(std::shared_ptr<Player>) override;
+    void build_house(Player&) override;
+    void build_hotel(Player&) override;
+    void reset(void) override;
 
-        void reset(void);                               // Clear the object
+    std::string get_type(void) const override;
+
+private:
+    int status;
+    std::shared_ptr<Player> owner;
+    const int cost_property = static_cast<int>(EnumType::COST_PROPERTY);
+    const int cost_house = static_cast<int>(EnumType::COST_HOUSE);
+    const int cost_hotel = static_cast<int>(EnumType::COST_HOTEL);
+    const int rent_house = static_cast<int>(EnumType::RENT_HOUSE);
+    const int rent_hotel = static_cast<int>(EnumType::RENT_HOTEL);
 };
+
+template <typename EnumType>
+std::ostream &operator<<(std::ostream &os, const Tile<EnumType> &t);
+
+#include "Tile.hpp"
 
 #endif
