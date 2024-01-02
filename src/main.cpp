@@ -5,11 +5,12 @@
 #include <iostream>
 #include <string>
 #include <memory>
-#include "Player/Player.h"
-#include "Tile/Tile.h"
-#include "Constants.h"
-#include "GameBoard/GameBoard.h"
-#include "Player/Robot.h"
+
+#include "../include/Player.h"
+#include "../include/Tile.h"
+#include "../include/Constants.h"
+#include "../include/GameBoard.h"
+#include "../include/Robot.h"
 using namespace std;
 
 /*

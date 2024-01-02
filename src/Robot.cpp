@@ -17,13 +17,11 @@ Robot::Robot(void)
     cnt++;
 }
 
-/*
 Robot::Robot(Robot &r)
 {
     this->balance = r.balance;
     this->name = r.name;
 }
-*/
 
 Robot::Robot(Robot &&r)
 {
@@ -39,14 +37,12 @@ Robot::~Robot()
     this->name = "";
 }
 
-/*
 Robot &Robot::operator=(const Robot &r)
 {
     this->balance = r.balance;
     this->name = r.name;
     return *this;
 }
-*/
 
 Robot &Robot::operator=(Robot &&r)
 {
@@ -57,32 +53,16 @@ Robot &Robot::operator=(Robot &&r)
     return *this;
 }
 
-int make_choice(Robot& r, int status)
+int make_choice(Robot& r)
 {
     srand(time(NULL));
-    int choice;
-    if(status == 0)
+    int choice = (rand() % 3);
+    if(choice == 0)
     {
-        choice = (rand() % 3);
-        if(choice == 0)
-        {
-            return 1;                                           // the terrain has no owner, so the robot will buy it
-        }
-        else
-        {
-            return 0;                                           // the terrain has no owne but the robot will not buy it
-        }
+        return 1;                               // Return 1 if the robot will buy the land or build a house (25%)
     }
-    else if(status == 1)                                        // the house 
+    else 
     {
-        choice = (rand() % 3);
-        if(choice == 0)
-        {
-            return 1;                                           // the robot is the 
-        }
-        else
-        {
-            return 0;
-        }
+        return 0;                               // Return 0 if the robot will not buy the land or build a house (75%)
     }
 }
