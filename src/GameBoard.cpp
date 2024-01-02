@@ -10,9 +10,9 @@
 /*
  * ------------------- GameBoard implementation ---------------------
  * TODO: - implement copy constructor and move constructor
- *       - handle angular tiles properly, now they are not displayed
- *         ( almost done. I created an AngularTile enum class )
- *       - show() only prints the tiles ( add the players and their houses/hotels)
+ *       - handle angular tiles properly ( almost done. I created an AngularTile enum class )
+ *       - save player position
+ *       - show() only prints the tiles ( add the players and their houses/hotels) (1.5 Visualizzazione)
  * -------------------------------------------------------------------
  */
 

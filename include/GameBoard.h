@@ -26,6 +26,8 @@ class GameBoard
 private:
 public:
     std::vector<std::unique_ptr<BaseTile>> tiles = std::vector<std::unique_ptr<BaseTile>>(28);   // temporarily public for testing purposes!
+    std::vector<int> playersPos = std::vector<int>(4, 0);
+    bool gameFinished = false;
 
     GameBoard(void);
     GameBoard(GameBoard &);

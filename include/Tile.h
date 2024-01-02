@@ -25,14 +25,14 @@ public:
     Tile(Tile&&);
 
     unsigned int get_status(void) const override;
-    Player& get_owner(void) const override;
+    std::shared_ptr<Player> get_owner(void) const override;
 
     Tile& operator=(const Tile&);
     Tile& operator=(Tile&&);
 
     void buy_terrain(std::shared_ptr<Player>) override;
-    void build_house(Player&) override;
-    void build_hotel(Player&) override;
+    void build_house(std::shared_ptr<Player>) override;
+    void build_hotel(std::shared_ptr<Player>) override;
     void reset(void) override;
 
     std::string get_type(void) const override;

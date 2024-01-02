@@ -1,67 +1,56 @@
 /*
- *
+ *  Author: Nicolò Pasetto
  */
 #ifndef PLAYER_H
 #define PLAYER_H
 
 #include <iostream>
+#include <ctime>
+#include <stdlib.h>
+#include <random>
 
 /*
  * Descrizione classe
  */
 class Player 
 {
-    private:
-        /* Variabili di classe */
-        // Saldo disponibile
-        unsigned int balance;
-        // Nome giocatore
-        std::string nome;
+    protected:
+        const unsigned int initial_balance = 100;               // Costante che definice il bilancio iniziale
+        unsigned int balance;                                   // Saldo disponibile
+        std::string name;                                       // Nome giocatore
 
     public:
         /* Constructor */
-        // Default
-        Player(void);
-        // Inizializza il nome
-        Player(std::string);
-        // Copia
-        Player(const Player&);
-        // Spostamento
-        Player(Player&&);
+        Player(void);                                           // Default
+        Player(std::string);                                    // Inizializza il nome
+        Player(const Player&) = delete;                         // Copia
+        Player(Player&&);                                       // Spostamento
 
         /* Operator overloading */
-        // Assegnamento di copia
-        Player& operator=(const Player&);
-        // Assegnamento di spostamento
-        Player& operator=(Player&&);
+        Player& operator=(const Player&) = delete;              // Assegnamento di copia
+        Player& operator=(Player&&);                            // Assegnamento di spostamento
 
         /* Destructor */
         ~Player();
-        // Serve?
+        // Serve?  <- Si
         
         /* Getters */
-        // Ritorna il conto disponibile
-        unsigned int get_balance(void) const;
-        // Ritorna il nome del giocatore
-        std::string get_name(void) const;
+        unsigned int get_balance(void) const;                   // Ritorna il conto disponibile
+        std::string get_name(void) const;                       // Ritorna il nome del giocatore
 
         /* Setters */
-        // Modifica il conto disponibile
-        void set_balance(int);
+    
+        void set_balance(int);                                  // Modifica il conto disponibile
 
         /* Funzioni di classe */
-        // Funzione che simula il lancio di un dado
-        virtual unsigned int dice_throw(void) const;
+        unsigned int dice_throw(void) const;                    // Funzione che simula il lancio di un dado
 };
 
 /* Operator overloading */
-// Output sullo stream
-std::ostream& operator<<(std::ostream&, const Player&);
+std::ostream& operator<<(std::ostream&, const Player&);         // Output sullo stream
 
-// Uguaglianza
-bool operator==(const Player&, const Player&);
+bool operator==(const Player&, const Player&);                  // Uguaglianza
 
-// Disuguaglianza
-bool operator!=(const Player&, const Player&);
+bool operator!=(const Player&, const Player&);                  // Disuguaglianza
 
 #endif

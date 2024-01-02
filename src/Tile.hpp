@@ -1,6 +1,6 @@
 /*
-* Author: Davide Saladino
-*/
+ * Author: Davide Saladino
+ */
 #ifndef TILE_HPP
 #define TILE_HPP
 
@@ -9,29 +9,27 @@
 /*
 * ----------------------- Tile implementation -----------------------
 * TODO: - check (and complete) the constructors
-*       - figure out discrepancies between the Player shared 
-          pointer and the Player reference
         - once the above is done, finish the game mechanics (buy, build, etc.)
 * -------------------------------------------------------------------
 */
 
 /* Constructors */
 template <typename EnumType>
-Tile<EnumType>::Tile() : status(0), owner(nullptr) {}                               // Default
+Tile<EnumType>::Tile() : status(0), owner(nullptr) {} // Default
 
 template <typename EnumType>
-Tile<EnumType>::Tile(const Tile &t) : status(t.status), owner(t.owner) {}           // Copy
+Tile<EnumType>::Tile(const Tile &t) : status(t.status), owner(t.owner) {} // Copy
 
 template <typename EnumType>
-Tile<EnumType>::Tile(Tile &&t) : status(t.status), owner(t.owner)                   // Move
+Tile<EnumType>::Tile(Tile &&t) : status(t.status), owner(t.owner)
 {
     t.status = 0;
-    t.owner.reset();
+    t.owner = nullptr;
 }
 
 /* Operators overloading */
 template <typename EnumType>
-Tile<EnumType> &Tile<EnumType>::operator=(const Tile &t)                            // Copy
+Tile<EnumType> &Tile<EnumType>::operator=(const Tile &t) // Copy
 {
     this->status = t.status;
     this->owner = t.owner;
@@ -39,12 +37,12 @@ Tile<EnumType> &Tile<EnumType>::operator=(const Tile &t)                        
 }
 
 template <typename EnumType>
-Tile<EnumType> &Tile<EnumType>::operator=(Tile &&t)                                 // Move
+Tile<EnumType> &Tile<EnumType>::operator=(Tile &&t) // Move
 {
     this->status = t.status;
     this->owner = t.owner;
     t.status = 0;
-    t.owner.reset();
+    t.owner = nullptr;
     return *this;
 }
 
@@ -56,62 +54,61 @@ unsigned int Tile<EnumType>::get_status(void) const
 }
 
 template <typename EnumType>
-Player &Tile<EnumType>::get_owner(void) const
+std::shared_ptr<Player> Tile<EnumType>::get_owner(void) const
 {
-    if (this->owner)
-    {
-        return *(this->owner);
-    }
-    else
-    {
-        throw std::logic_error("Attempt to get owner from a Tile with nullptr owner.");
-    }
+    return owner;
 }
 
 /* Game mechanics */
 template <typename EnumType>
 void Tile<EnumType>::buy_terrain(std::shared_ptr<Player> p)
 {
-    if (this->status == 0 && p->get_balance() >= this->cost_property)
+    if (status == 0 && p->get_balance() >= cost_property)
     {
-        this->owner = p;
-        int new_balance = this->owner->get_balance() - this->cost_property;
-        this->owner->set_balance(new_balance);
-        this->status++;
+        owner = p;
+        int new_balance = owner->get_balance() - cost_property;
+        owner->set_balance(new_balance);
+        status++;
 
         // Prints some debugging info (owner's balance and name)
-        std::cout << this->owner->get_name() << " bought a " << this->get_type() << " tile!" << std::endl;
-        std::cout << "\t" << *(this->owner.get()) << std::endl;
+        std::cout << owner->get_name() << " bought a " << get_type() << " tile!" << std::endl;
+        std::cout << "\t" << owner << std::endl;
     }
     else
-        std::cout << this->owner->get_name() << ", you can't build a house on this tile!\n";
+        std::cout << p->get_name() << ", you can't build on this tile!\n";
 }
 
 template <typename EnumType>
-void Tile<EnumType>::build_house(Player &p)
+void Tile<EnumType>::build_house(std::shared_ptr<Player> p)
 {
-    if (this->status == 1 && p == *(this->owner) && p.get_balance() >= this->cost_house)
+    if (!owner)
     {
-        int new_balance = this->owner->get_balance() - this->cost_house;
-        this->owner->set_balance(new_balance);
-        this->status++;
-        std::cout << this->owner->get_name() << " built a house on a " << this->get_type() << " tile!\n";
-        std::cout << "\t" << *(this->owner.get()) << std::endl;
+        std::cout << "This tile has yet to be purchased!!\n";
+        return;
+    }
+
+    if (status == 1 && p == owner && p->get_balance() >= cost_house)
+    {
+        int new_balance = owner->get_balance() - cost_house;
+        owner->set_balance(new_balance);
+        status++;
+        std::cout << owner->get_name() << " built a house on a " << get_type() << " tile!\n";
+        std::cout << "\t" << owner << std::endl;
     }
     else
-        std::cout << this->owner->get_name() << ", you can't build a house on this tile!\n";
+        std::cout << p->get_name() << ", you can't build a house on this tile!\n";
 }
 
 template <typename EnumType>
-void Tile<EnumType>::build_hotel(Player &p)
+void Tile<EnumType>::build_hotel(std::shared_ptr<Player> p)
 {
-    std::cout << "Non puoi costruire hotels su questa casella mona\n";
+    std::cout << "You can't build hotels on this tile.\n";
 }
 
 template <typename EnumType>
 void Tile<EnumType>::reset(void)
 {
-    std::cout << "Non puoi resettare una casella angolare!\n";
+    std::cout << "You can't reset an angular tile!\n";
 }
 
 /* Utility Methods */
@@ -120,10 +117,14 @@ std::string Tile<EnumType>::get_type(void) const
 {
     std::string tileType = typeid(EnumType).name();
 
-    if(tileType.find("Cheap") != std::string::npos) tileType = "cheap";
-    else if(tileType.find("Standard") != std::string::npos) tileType = "standard";
-    else if (tileType.find("Luxury") != std::string::npos) tileType = "luxury";
-    else tileType = "angular";
+    if (tileType.find("Cheap") != std::string::npos)
+        tileType = "cheap";
+    else if (tileType.find("Standard") != std::string::npos)
+        tileType = "standard";
+    else if (tileType.find("Luxury") != std::string::npos)
+        tileType = "luxury";
+    else
+        tileType = "angular";
 
     return tileType;
 }

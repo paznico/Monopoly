@@ -1,22 +1,35 @@
+/*
+* Author: Leonardo Mosele
+*/
 #ifndef ROBOT_H
 #define ROBOT_H
 
 #include "Player.h"
 
+#include <ctime>
+#include <stdlib.h>
+
 class Robot : public Player 
 {
-    private:
-        // altro
-
     public:
         
         /* Constructor */
-        Robot(void);               // default
-        Robot(Player&);            // copy
-        Robot(Player&&);           // move
+        Robot(void);              // default
+        //Robot(Robot&);            // copy
+        Robot(Robot&&);           // move
 
+        /* Destructor */
+        ~Robot();
         
-        void dice_throw() override;
+        /* Operator overloading */
+        //Robot& operator=(const Robot&);                       // Assegnamento di copia
+        Robot& operator=(Robot&&);                            // Assegnamento di spostamento
+
+        int make_choice(Robot&, int);                           // Funzione che ritorna 0 o 1 per l'acquisto di un terreno o
+                                                                // di una casa. Attenzione! CHIAMARE FUNZIONE SOLO CON TERRENO
+                                                                // DEL ROBOT O DI NESSUNO
+
+
 };
 
 #endif
