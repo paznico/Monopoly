@@ -29,7 +29,7 @@ class Robot : public Player
         Funzione che ritorna 0 o 1 per l'acquisto di un terreno di una casa o di un hotel.
         Attenzione! CHIAMARE FUNZIONE SOLO CON TERRENO DEL ROBOT O DI NESSUNO
         */
-        int make_choice(Robot&);
+        bool make_choice(void);
 };
 
 #endif

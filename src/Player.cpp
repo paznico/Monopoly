@@ -1,5 +1,5 @@
 /*
- *  Author: Leonardo Mosele e Davide Saladino
+ *  Author: Niccolò Pasetto
  */
 
 #include "../include/Player.h"
@@ -16,14 +16,6 @@ Player::Player(std::string n)
     this->name = n;
 }
 
-/*
-Player::Player(const Player &p)
-{
-    this->balance = p.balance;
-    this->name = p.name;
-}
-*/
-
 Player::Player(Player &&p)
 {
     this->balance = p.balance;
@@ -32,22 +24,11 @@ Player::Player(Player &&p)
     p.balance = 0;
 }
 
-// ?
 Player::~Player()
 {
     this->balance = 0;
     this->name = "";
 }
-// ?
-
-/*
-Player &Player::operator=(const Player &p)
-{
-    this->balance = p.balance;
-    this->name = p.name;
-    return *this;
-}
-*/
 
 Player &Player::operator=(Player &&p)
 {
@@ -68,6 +49,11 @@ std::string Player::get_name(void) const
     return this->name;
 }
 
+int Player::get_position(void)
+{
+    return this->position;
+}
+
 void Player::set_balance(int new_balance)
 {
     if (new_balance <= 0)
@@ -76,25 +62,12 @@ void Player::set_balance(int new_balance)
         this->balance = new_balance;
 }
 
-unsigned int Player::dice_throw(void) const
+void Player::increment_player_pos(const int pos)
 {
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(1,6);
-    return dist6(rng) + dist6(rng);
+    this->position += (pos % 28);
 }
 
 std::ostream &operator<<(std::ostream &os, const Player &p)
 {
     return os << p.get_name() << " has " << p.get_balance() << " fiorini\n";
-}
-
-bool operator==(const Player &p1, const Player &p2)
-{
-    return p1.get_name() == p2.get_name();
-}
-
-bool operator!=(const Player &p1, const Player &p2)
-{
-    return p1.get_name() != p2.get_name();
 }

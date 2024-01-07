@@ -53,16 +53,12 @@ Robot &Robot::operator=(Robot &&r)
     return *this;
 }
 
-int make_choice(Robot& r)
+bool make_choice(void)
 {
     srand(time(NULL));
     int choice = (rand() % 3);
     if(choice == 0)
-    {
         return 1;                               // Return 1 if the robot will buy the land or build a house (25%)
-    }
-    else 
-    {
+    else
         return 0;                               // Return 0 if the robot will not buy the land or build a house (75%)
-    }
 }

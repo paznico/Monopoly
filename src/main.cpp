@@ -1,5 +1,5 @@
 /*
- *  Authors: Leonardo Mosele & Nicolò Pasetto & Davide Saladino
+ *  Authors: Leonardo Mosele & Niccolò Pasetto & Davide Saladino
  */
 
 #include <iostream>
@@ -20,29 +20,15 @@ using namespace std;
  * ------------------------------------------------------------------
  */
 
-void play(GameBoard &gameBoard, shared_ptr<Player> p1, shared_ptr<Player> p2, shared_ptr<Player> p3, shared_ptr<Player> p4)
+void play(GameBoard &gameBoard)
 {
     // Run the game until one of the players
     // has won (or max turns are reached)
+    int i = 0;
     while (!gameBoard.is_game_finished())
     {
-
-        int currentPlayer = gameBoard.current_player(); // Get the current player using the turn number
-        int dice_num = gameBoard.dice_throw();          // Throw the dice
-
-        gameBoard.increment_player_pos(currentPlayer, dice_num);
-        // Move the player and perform the action
-        // related to the square it is in.
-        if (currentPlayer == 0)
-            gameBoard.action_handler(p1);
-        else if (currentPlayer == 1)
-            gameBoard.action_handler(p2);
-        else if (currentPlayer == 2)
-            gameBoard.action_handler(p3);
-        else if (currentPlayer == 3)
-            gameBoard.action_handler(p4);
-
-        gameBoard.increment_turn(); // Increment the turn number
+        cout << "Turno " << ++i << endl;
+        gameBoard.next_turn();
     }
 
     cout << "Game finished!\n";
@@ -93,9 +79,6 @@ int main(int argc, char *argv[])
         }
     }
 
-    GameBoard gameBoard = GameBoard();
-    gameBoard.show();
-
     shared_ptr<Player> p1;
     shared_ptr<Player> p2;
     shared_ptr<Player> p3;
@@ -122,7 +105,10 @@ int main(int argc, char *argv[])
         p4 = make_shared<Robot>();
     }
 
-    play(gameBoard, p1, p2, p3, p4);
+    GameBoard gameBoard = GameBoard(p1, p2, p3, p4);
+    gameBoard.show();
+
+    play(gameBoard);
 
     return 0;
 }

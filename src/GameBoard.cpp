@@ -3,36 +3,45 @@
  */
 #include "../include/GameBoard.h"
 
-#include <ctime>
-#include <stdlib.h>
-#include <iostream>
-
 /*
  * ------------------- GameBoard implementation ---------------------
- * TODO: - implement copy constructor and move constructor
+ * TODO: - implement copy constructor and move constructor (?)
  *       - handle angular tiles properly ( almost done. I created an AngularTile enum class )
- *       - save player position
  *       - show() only prints the tiles ( add the players and their houses/hotels) (1.5 Visualizzazione)
+ *       - the player should be able to print the Game Board 
  * -------------------------------------------------------------------
  */
 
 /*
-* In this implementation, we employ srand() with the current time as the seed to generate random numbers. 
-* Without this seeding, the sequence of numbers produced by rand() would remain constant across program runs. 
-* If the reliability of the program is significantly contingent on the unpredictability of these numbers, 
-* this could introduce a security vulnerability. A player might forecast the sequence and leverage this 
-* knowledge for personal gain. However, given that the game remains unaffected by a player's awareness of 
-* the number sequence, this approach is considered safe and suitable for our purposes.
+* In this implementation, we employ srand() with the current time as the seed to generate random numbers for
+* tiles generation. Without this seeding, the sequence of numbers produced by rand() would remain constant 
+* across program runs.If the reliability of the program is significantly contingent on the unpredictability 
+* of these numbers,this could introduce a security vulnerability. A player might forecast the sequence and 
+* leverage this knowledge for personal gain. However, given that the game remains unaffected by a player's 
+* awareness of the number sequence, this approach is considered safe and suitable for our purposes.
+* Meanwhile, for a more secure approach, we use the C++11 random number generation library to generate
+* random dice throws. 
 */
 
-GameBoard::GameBoard(void)
+GameBoard::GameBoard(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2, std::shared_ptr<Player> p3, std::shared_ptr<Player> p4)
 {
+    this->players.push(p1);
+    this->players.push(p2);
+    this->players.push(p3);
+    this->players.push(p4);
     this->generate_tiles();
 }
 
-void GameBoard::increment_player_pos(const int player, const int pos)
+void GameBoard::next_turn(void)
 {
-    this->playersPos[player] += (pos % 28);
+    // Get the player at the front of the queue
+    auto p = this->players.front();
+
+    action_handler(p);
+
+    // Move the player to the back of the queue
+    this->players.pop();
+    this->players.push(p);
 }
 
 int GameBoard::dice_throw(void) const
@@ -45,7 +54,7 @@ int GameBoard::dice_throw(void) const
 
 void GameBoard::action_handler(std::shared_ptr<Player> p)
 {
-    int pos = this->playersPos[this->current_player()];
+    int pos = p->get_position();
     auto tile = this->tiles[pos].get();
     int status = tile->get_status();
 
@@ -85,10 +94,12 @@ void GameBoard::action_handler(std::shared_ptr<Player> p)
                     tile->build_hotel(p);
             }
         }
+        // Ciao paz, modifica qui
         else
         {
             // Pay the rent to the owner
             if(status == 1) {}
+            else if(status == 2) {}
         }
     }
 }

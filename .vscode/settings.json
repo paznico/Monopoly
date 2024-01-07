@@ -3,6 +3,9 @@
         "memory": "cpp",
         "xiosbase": "cpp",
         "iosfwd": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "deque": "cpp",
+        "format": "cpp",
+        "vector": "cpp"
     }
 }

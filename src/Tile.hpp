@@ -148,7 +148,23 @@ void Tile<EnumType>::pay_rent_house(std::shared_ptr<Player> p)
 template <typename EnumType>
 void Tile<EnumType>::pay_rent_hotel(std::shared_ptr<Player> p)
 {
-    
+    if(status == 1 && p != owner)
+    {
+        if(p->get_balance() < this->rent_hotel) {
+            std::cout << p->get_name() << " is bankrupt!\n";
+            return;
+        }
+        int new_balance = p->get_balance() - this->rent_hotel;
+        p->set_balance(new_balance);
+        new_balance = owner->get_balance() + this->rent_hotel;
+        owner->set_balance(new_balance);
+
+        std::cout << p->get_name() << " paid " << this->rent_hotel << " to " << owner->get_name() << std::endl;
+        std::cout << "\t" << p << std::endl;
+        std::cout << "\t" << owner << std::endl;
+    }
+    else
+        std::cout << p->get_name() << ", you can't pay rent on this tile!\n";
 }
 
 template <typename EnumType>

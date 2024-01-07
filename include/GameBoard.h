@@ -9,8 +9,13 @@
 #include "Player.h"
 #include "Constants.h"
 
-#include <vector>
+#include <ctime>
+#include <stdlib.h>
+#include <iostream>
 #include <memory>
+#include <random>
+#include <vector>
+#include <queue>
 
 /*
  * ------------------------- GameBoard class -------------------------
@@ -27,26 +32,24 @@
 class GameBoard
 {
 private:
-    std::vector<int> playersPos = std::vector<int>(4, 0);
+    std::queue<std::shared_ptr<Player>> players;
+
     bool gameFinished = false;
-    unsigned int turn = 0;
+    
 public:
     std::vector<std::unique_ptr<BaseTile>> tiles = std::vector<std::unique_ptr<BaseTile>>(28);   // temporarily public for testing purposes!
 
-    GameBoard(void);
+    GameBoard(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2, std::shared_ptr<Player> p3, std::shared_ptr<Player> p4);
     GameBoard(GameBoard &);
     GameBoard(GameBoard &&);
 
     void generate_tiles(void);
     bool is_game_finished(void) { return this->gameFinished; };
 
-    int get_turn(void) const { return this->turn; };
-    void increment_turn(void) { this->turn++; };
-    int current_player(void) const { return this->turn % 4; };
+    void next_turn(void);
 
     int dice_throw(void) const;
     void action_handler(std::shared_ptr<Player>);
-    void increment_player_pos(const int, const int);
     void show(void);
 };
 
