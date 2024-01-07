@@ -6,8 +6,8 @@
 
 #include <iostream>
 #include <memory>
-#include "../Player/Player.h"
-#include "../Constants.h"
+#include "Player.h"
+#include "Constants.h"
 #include "BaseTile.h"
 
 /*
@@ -33,23 +33,25 @@ public:
     void buy_terrain(std::shared_ptr<Player>) override;
     void build_house(std::shared_ptr<Player>) override;
     void build_hotel(std::shared_ptr<Player>) override;
+    void pay_rent_house(std::shared_ptr<Player>) override;
+    void pay_rent_hotel(std::shared_ptr<Player>) override;
     void reset(void) override;
 
     std::string get_type(void) const override;
 
-private:
-    int status;
-    std::shared_ptr<Player> owner;
     const int cost_property = static_cast<int>(EnumType::COST_PROPERTY);
     const int cost_house = static_cast<int>(EnumType::COST_HOUSE);
     const int cost_hotel = static_cast<int>(EnumType::COST_HOTEL);
     const int rent_house = static_cast<int>(EnumType::RENT_HOUSE);
     const int rent_hotel = static_cast<int>(EnumType::RENT_HOTEL);
+private:
+    int status;
+    std::shared_ptr<Player> owner;
 };
 
 template <typename EnumType>
 std::ostream &operator<<(std::ostream &os, const Tile<EnumType> &t);
 
-#include "Tile.hpp"
+#include "../src/Tile.hpp"
 
 #endif

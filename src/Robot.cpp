@@ -1,7 +1,7 @@
 /*
  *  Author: Leonardo Mosele
  */
-#include "Robot.h"
+#include "../include/Robot.h"
 
 /*
 * ----------------------- Robot implementation -----------------------
@@ -13,7 +13,7 @@ Robot::Robot(void)
 {
     static int cnt = 0; 
     this->balance = initial_balance;
-    name = (cnt == 0) ? "GianmarcoTheRobot" : (cnt == 1) ? "MechaMario"  : (cnt == 2) ? "CircuitFilippo" : "GennaroIlBullo";
+    name = (cnt == 0) ? "GianmariaTheRobot" : (cnt == 1) ? "MechaMario"  : (cnt == 2) ? "CircuitFilippo" : "GennaroIlBullo";
     cnt++;
 }
 

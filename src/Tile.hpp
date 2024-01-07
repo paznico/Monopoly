@@ -4,12 +4,13 @@
 #ifndef TILE_HPP
 #define TILE_HPP
 
-#include "Tile.h"
+#include "../include/Tile.h"
 
 /*
 * ----------------------- Tile implementation -----------------------
 * TODO: - check (and complete) the constructors
-        - once the above is done, finish the game mechanics (buy, build, etc.)
+        - fix cout on game mechanics
+        - if player lose, remove him from the game (make stack for players)
 * -------------------------------------------------------------------
 */
 
@@ -21,7 +22,7 @@ template <typename EnumType>
 Tile<EnumType>::Tile(const Tile &t) : status(t.status), owner(t.owner) {} // Copy
 
 template <typename EnumType>
-Tile<EnumType>::Tile(Tile &&t) : status(t.status), owner(t.owner)
+Tile<EnumType>::Tile(Tile &&t) : status(t.status), owner(t.owner) // Move
 {
     t.status = 0;
     t.owner = nullptr;
@@ -92,6 +93,7 @@ void Tile<EnumType>::build_house(std::shared_ptr<Player> p)
         int new_balance = owner->get_balance() - cost_house;
         owner->set_balance(new_balance);
         status++;
+
         std::cout << owner->get_name() << " built a house on a " << get_type() << " tile!\n";
         std::cout << "\t" << owner << std::endl;
     }
@@ -102,13 +104,58 @@ void Tile<EnumType>::build_house(std::shared_ptr<Player> p)
 template <typename EnumType>
 void Tile<EnumType>::build_hotel(std::shared_ptr<Player> p)
 {
-    std::cout << "You can't build hotels on this tile.\n";
+    if (!owner)
+    {
+        std::cout << "This tile has yet to be purchased!!\n";
+        return;
+    }
+
+    if (status == 2 && p == owner && p->get_balance() >= cost_hotel)
+    {
+        int new_balance = owner->get_balance() - cost_hotel;
+        owner->set_balance(new_balance);
+        status++;
+
+        std::cout << owner->get_name() << " built an hotel on a " << get_type() << " tile!\n";
+        std::cout << "\t" << owner << std::endl;
+    }
+    else
+        std::cout << p->get_name() << ", you can't build an hotel on this tile!\n";
+}
+
+template <typename EnumType>
+void Tile<EnumType>::pay_rent_house(std::shared_ptr<Player> p)
+{
+    if(status == 1 && p != owner)
+    {
+        if(p->get_balance() < this->rent_house) {
+            std::cout << p->get_name() << " is bankrupt!\n";
+            return;
+        }
+        int new_balance = p->get_balance() - this->rent_house;
+        p->set_balance(new_balance);
+        new_balance = owner->get_balance() + this->rent_house;
+        owner->set_balance(new_balance);
+
+        std::cout << p->get_name() << " paid " << this->rent_house << " to " << owner->get_name() << std::endl;
+        std::cout << "\t" << p << std::endl;
+        std::cout << "\t" << owner << std::endl;
+    }
+    else
+        std::cout << p->get_name() << ", you can't pay rent on this tile!\n";
+}
+
+template <typename EnumType>
+void Tile<EnumType>::pay_rent_hotel(std::shared_ptr<Player> p)
+{
+    
 }
 
 template <typename EnumType>
 void Tile<EnumType>::reset(void)
 {
-    std::cout << "You can't reset an angular tile!\n";
+    status = 0;
+    owner = nullptr;
 }
 
 /* Utility Methods */

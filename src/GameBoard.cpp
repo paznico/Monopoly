@@ -1,7 +1,7 @@
 /*
  * Autore file: Davide Saladino
  */
-#include "GameBoard.h"
+#include "../include/GameBoard.h"
 
 #include <ctime>
 #include <stdlib.h>
@@ -28,6 +28,69 @@
 GameBoard::GameBoard(void)
 {
     this->generate_tiles();
+}
+
+void GameBoard::increment_player_pos(const int player, const int pos)
+{
+    this->playersPos[player] += (pos % 28);
+}
+
+int GameBoard::dice_throw(void) const
+{
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(1,6);
+    return dist6(rng) + dist6(rng);
+}
+
+void GameBoard::action_handler(std::shared_ptr<Player> p)
+{
+    int pos = this->playersPos[this->current_player()];
+    auto tile = this->tiles[pos].get();
+    int status = tile->get_status();
+
+    char choice;
+
+    // Different choice based on the tile type and status
+
+    if(status == 0)
+    {
+        // Ask the player if he wants to buy the terrain
+        std::cout << "Do you want to buy the terrain? (S/N)" << std::endl;
+        std::cin >> choice;
+
+        if(choice == 'S') 
+            tile->buy_terrain(p);
+    }
+    else 
+    {
+        if(tile->get_owner() == p)
+        {
+            if(status == 1)
+            {
+                // Ask the player if he wants to build a house
+                std::cout << "Do you want to build a house? (S/N)" << std::endl;
+                std::cin >> choice;
+
+                if(choice == 'S')
+                    tile->build_house(p);
+            }
+            else if(status == 2)
+            {
+                // Ask the player if he wants to build an hotel
+                std::cout << "Do you want to build an hotel? (S/N)" << std::endl;
+                std::cin >> choice;
+
+                if(choice == 'S')
+                    tile->build_hotel(p);
+            }
+        }
+        else
+        {
+            // Pay the rent to the owner
+            if(status == 1) {}
+        }
+    }
 }
 
 void GameBoard::generate_tiles(void)

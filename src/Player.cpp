@@ -2,7 +2,7 @@
  *  Author: Leonardo Mosele e Davide Saladino
  */
 
-#include "Player.h"
+#include "../include/Player.h"
 
 Player::Player(void)
 {
