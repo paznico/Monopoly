@@ -132,10 +132,16 @@ void Tile<EnumType>::pay_rent_house(std::shared_ptr<Player> p)
             std::cout << p->get_name() << " is bankrupt!\n";
             return;
         }
+        
+        p->sub_balance(this->rent_house);
+        owner->add_balance(this->rent_house);
+
+        /*
         int new_balance = p->get_balance() - this->rent_house;
         p->set_balance(new_balance);
         new_balance = owner->get_balance() + this->rent_house;
         owner->set_balance(new_balance);
+        */
 
         std::cout << p->get_name() << " paid " << this->rent_house << " to " << owner->get_name() << std::endl;
         std::cout << "\t" << p << std::endl;
@@ -154,10 +160,8 @@ void Tile<EnumType>::pay_rent_hotel(std::shared_ptr<Player> p)
             std::cout << p->get_name() << " is bankrupt!\n";
             return;
         }
-        int new_balance = p->get_balance() - this->rent_hotel;
-        p->set_balance(new_balance);
-        new_balance = owner->get_balance() + this->rent_hotel;
-        owner->set_balance(new_balance);
+        p->sub_balance(this->rent_hotel);
+        owner->add_balance(this->rent_hotel);
 
         std::cout << p->get_name() << " paid " << this->rent_hotel << " to " << owner->get_name() << std::endl;
         std::cout << "\t" << p << std::endl;

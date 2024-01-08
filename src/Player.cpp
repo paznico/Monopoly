@@ -54,6 +54,21 @@ int Player::get_position(void)
     return this->position;
 }
 
+void Player::add_balance(unsigned int amount)
+{
+    this->balance += amount;
+}
+
+bool Player::sub_balance(unsigned int amount)
+{
+    if(this->balance < amount)
+        return false;
+    else
+        this->balance -= amount;
+    
+    return true;
+}
+
 void Player::set_balance(int new_balance)
 {
     if (new_balance <= 0)
@@ -62,7 +77,7 @@ void Player::set_balance(int new_balance)
         this->balance = new_balance;
 }
 
-void Player::increment_player_pos(const int pos)
+void Player::move(const int pos)
 {
     this->position += (pos % 28);
 }

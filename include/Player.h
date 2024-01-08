@@ -38,8 +38,10 @@ class Player
 
         /* Setters */
         void set_balance(int);                                  // Modifica il conto disponibile
+        void add_balance(unsigned int);
+        bool sub_balance(unsigned int);
 
-        void increment_player_pos(const int);
+        void move(const int);
 };
 
 /* Operator overloading */

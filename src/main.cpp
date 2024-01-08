@@ -11,6 +11,8 @@
 #include "../include/Constants.h"
 #include "../include/GameBoard.h"
 #include "../include/Robot.h"
+#include "../include/Logger.h"
+
 using namespace std;
 
 /*
@@ -43,6 +45,7 @@ int main(int argc, char *argv[])
     //      true    4 computers
     //      false   1 player and 3 computers
     bool gameType = false;
+    Logger log = Logger();
 
     if (argc < 2)
     {
@@ -94,11 +97,25 @@ int main(int argc, char *argv[])
     else
     {
         string name;
-        do
+		bool ask = false;
+		while(!ask)
         {
-            cout << "Inserisci nome giocatore umano:\n>>>";
-            cin >> name;
-        } while (name.length() < 2 || name.length() > 10);
+            cout<<"Inserisci nome giocatore umano:\n>>> ";
+            cin>>name;
+			if(name.length() <= 2)
+				cout<<"\nNome troppo corto!\n\n";
+			else if(name.length() >=20)
+				cout<<"\nNome troppo lungo!\n\n";
+			else if(name == "LucaTonin")
+			{
+				ask = true;
+				cout<<"\nBenvenuto prof, ha già vinto\n";
+			}
+			else
+				ask = true;
+        }
+		while (name.length() < 2 || name.length() > 10);
+
         p1 = make_shared<Player>(name);
         p2 = make_shared<Robot>();
         p3 = make_shared<Robot>();

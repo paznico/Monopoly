@@ -8,7 +8,7 @@
  * TODO: - implement copy constructor and move constructor (?)
  *       - handle angular tiles properly ( almost done. I created an AngularTile enum class )
  *       - show() only prints the tiles ( add the players and their houses/hotels) (1.5 Visualizzazione)
- *       - the player should be able to print the Game Board 
+ *       - the player should be able to print the Game Board
  * -------------------------------------------------------------------
  */
 
@@ -70,6 +70,7 @@ void GameBoard::action_handler(std::shared_ptr<Player> p)
 
         if(choice == 'S') 
             tile->buy_terrain(p);
+            //log.add_log(p.get_name()<<" ha acquistato il terreno "<<);
     }
     else 
     {
@@ -94,12 +95,12 @@ void GameBoard::action_handler(std::shared_ptr<Player> p)
                     tile->build_hotel(p);
             }
         }
-        // Ciao paz, modifica qui
         else
         {
-            // Pay the rent to the owner
-            if(status == 1) {}
-            else if(status == 2) {}
+            if(status == 1)
+                tile->pay_rent_house(p);
+            else if(status == 2)
+                tile->pay_rent_hotel(p);
         }
     }
 }
@@ -149,8 +150,30 @@ void GameBoard::generate_tiles(void)
         // std::cout << "Max standard: " << max_standard << std::endl;
         // std::cout << "Max luxury: " << max_luxury << std::endl;
 
+        std::string tile_name = "";
+        if(x <= 6)
+        {
+            tile_name = "A";
+            tile_name += char(x + 49);
+        }
+        else if(x <= 13)
+        {
+            tile_name = char(x + 58);
+            tile_name += "8";
+        }
+        else if(x <= 20)
+        {
+           tile_name = "H";
+           tile_name += char(70 - x);
+        }
+        else
+        {
+            tile_name = char(93 - x);
+            tile_name += "1";
+        }
+
         if (random == 0)
-            tiles[x] = std::make_unique<Tile<AngularTile>>();
+            tiles[x] = std::make_unique<Tile<AngularTile>>(tile_name);
         else if (random == 1)
             tiles[x] = std::make_unique<Tile<CheapTile>>();
         else if (random == 2)
@@ -189,4 +212,45 @@ void GameBoard::show()
         }
         std::cout << std::endl;
     }
+    
+}
+
+void GameBoard::show_property(void)
+{
+    auto p1 = this->players.front();
+    std::string p1_property = p1->get_name() + ": ";
+    this->players.pop();
+    this->players.push(p1);
+    auto p2 = this->players.front();
+    std::string p2_property = p2->get_name() + ": ";
+    this->players.pop();
+    this->players.push(p2);
+    auto p3 = this->players.front();
+    std::string p3_property = p3->get_name() + ": ";
+    this->players.pop();
+    this->players.push(p3);
+    auto p4 = this->players.front();
+    std::string p4_property = p4->get_name() + ": ";
+    this->players.pop();
+    this->players.push(p4);
+
+
+    for(int i = 0; i < 28; i++)
+    {
+        auto tile = this->tiles[i].get();
+        if(tile->get_owner() == p1)
+            p1_property += "COORDINATA"; //tile->get_name();
+        else if(tile->get_owner() == p2)
+            p2_property += "COORDINATA";
+        else if(tile->get_owner() == p3)
+            p3_property += "COORDINATA";
+        else
+            p4_property += "COORDINATA";
+
+    }
+
+    std::cout<<p1_property<<"\n";
+    std::cout<<p2_property<<"\n";
+    std::cout<<p3_property<<"\n";
+    std::cout<<p4_property<<"\n";
 }

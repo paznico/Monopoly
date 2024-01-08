@@ -6,6 +6,7 @@
         "xstring": "cpp",
         "deque": "cpp",
         "format": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "queue": "cpp"
     }
 }
