@@ -1,3 +1,7 @@
+/*
+ * Autore file: Leonardo Mosele
+ */
+
 #ifndef LOGGER_H
 #define LOGGER_H
 
@@ -18,6 +22,8 @@ class Logger
 
                 /* Function that add a string */
                 void add_log(std::string);
+
+                friend std::ostream& operator<<(ostream&, std::string);
 };
 
 #endif

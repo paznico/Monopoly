@@ -1,3 +1,6 @@
+/*
+ * Autore file: Leonardo Mosele
+ */
 #include "../include/Logger.h";
 using namespace std;
 
@@ -9,4 +12,10 @@ Logger::Logger(void)
 void Logger::add_log(string str)
 {
     fout<<str<<'\n';
+}
+
+std::ostream& operator<<(ostream& os, std::string str)
+{
+    add_log(str);
+    return os << str;
 }
