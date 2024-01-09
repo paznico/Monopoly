@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <iomanip>
 
 using namespace std;
 
@@ -21,9 +20,10 @@ class Logger
                 Logger(void);
 
                 /* Function that add a string */
-                void add_log(std::string);
+                void add_log(const std::string&);
 
-                friend std::ostream& operator<<(ostream&, std::string);
+                /* Destruttore */
+                ~Logger();
 };
 
 #endif

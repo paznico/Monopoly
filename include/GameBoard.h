@@ -48,6 +48,7 @@ public:
 
     void next_turn(void);
 
+    bool check_end_game() const;
     int dice_throw(void) const;
     void action_handler(std::shared_ptr<Player>);
     void show(void);
