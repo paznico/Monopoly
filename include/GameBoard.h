@@ -16,6 +16,7 @@
 #include <random>
 #include <vector>
 #include <queue>
+#include <map>
 
 /*
  * ------------------------- GameBoard class -------------------------
@@ -33,22 +34,22 @@ class GameBoard
 {
 private:
     std::queue<std::shared_ptr<Player>> players;
-
+    std::vector<std::unique_ptr<BaseTile>> tiles = std::vector<std::unique_ptr<BaseTile>>(28);
     bool gameFinished = false;
     
 public:
-    std::vector<std::unique_ptr<BaseTile>> tiles = std::vector<std::unique_ptr<BaseTile>>(28);   // temporarily public for testing purposes!
 
     GameBoard(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2, std::shared_ptr<Player> p3, std::shared_ptr<Player> p4);
     GameBoard(GameBoard &);
     GameBoard(GameBoard &&);
 
+
+    void find_unique(std::vector<int> pos, std::multimap<int, std::shared_ptr<Player>> players, std::vector<std::shared_ptr<Player>>& vec);
     void generate_tiles(void);
-    bool is_game_finished(void) { return this->gameFinished; };
+    bool is_game_finished(void) const { return this->gameFinished; };
 
     void next_turn(void);
 
-    bool check_end_game() const;
     int dice_throw(void) const;
     void action_handler(std::shared_ptr<Player>);
     void show(void);

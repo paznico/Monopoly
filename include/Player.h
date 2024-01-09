@@ -40,8 +40,7 @@ class Player
         void set_balance(int);                                  // Modifica il conto disponibile
         void add_balance(unsigned int);
         bool sub_balance(unsigned int);
-
-        void move(const int);
+        void move(const unsigned int);
 };
 
 /* Operator overloading */

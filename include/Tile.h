@@ -3,7 +3,6 @@
 */
 #ifndef TILE_H
 #define TILE_H
-
 #include <iostream>
 #include <memory>
 #include "Player.h"
@@ -21,6 +20,7 @@ template <typename EnumType>
 class Tile : public BaseTile{
 public:
     Tile();
+    Tile(const std::string&);
     Tile(const Tile&);
     Tile(Tile&&);
 
@@ -38,15 +38,19 @@ public:
     void reset(void) override;
 
     std::string get_type(void) const override;
+    std::string get_coord(void) const { return this->coordinat; };
+
 
     const int cost_property = static_cast<int>(EnumType::COST_PROPERTY);
     const int cost_house = static_cast<int>(EnumType::COST_HOUSE);
     const int cost_hotel = static_cast<int>(EnumType::COST_HOTEL);
     const int rent_house = static_cast<int>(EnumType::RENT_HOUSE);
     const int rent_hotel = static_cast<int>(EnumType::RENT_HOTEL);
+
 private:
     int status;
     std::shared_ptr<Player> owner;
+    std::string coordinate;
 };
 
 template <typename EnumType>

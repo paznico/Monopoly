@@ -77,9 +77,9 @@ void Player::set_balance(int new_balance)
         this->balance = new_balance;
 }
 
-void Player::move(const int pos)
+void Player::move(const unsigned int pos)
 {
-    this->position += (pos % 28);
+    this->position = (this->position + pos) % 28;
 }
 
 std::ostream &operator<<(std::ostream &os, const Player &p)

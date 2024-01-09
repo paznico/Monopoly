@@ -25,17 +25,95 @@
 
 GameBoard::GameBoard(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2, std::shared_ptr<Player> p3, std::shared_ptr<Player> p4)
 {
-    this->players.push(p1);
-    this->players.push(p2);
-    this->players.push(p3);
-    this->players.push(p4);
+
+    std::vector<std::shared_ptr<Player>> players_order = std::vector<std::shared_ptr<Player>>(4);
+    find_unique({3, 2, 1, 0}, std::multimap<int, std::shared_ptr<Player>>{{dice_throw(), p1}, {dice_throw(), p2}, {dice_throw(), p3}, {dice_throw(), p4}}, players_order);
+
+    std::cout << "Player vector ordered:" << std::endl;
+    for(const auto& entry : players_order)
+    {
+        std::cout << "Entry: " << entry->get_name() << std::endl;\
+        this->players.push(entry);
+    }
     this->generate_tiles();
+}
+
+void GameBoard::find_unique(std::vector<int> pos, std::multimap<int, std::shared_ptr<Player>> players, std::vector<std::shared_ptr<Player>>& vec)
+{
+    if(pos.empty()) return;
+    //std::cout << "Pos size: " << pos.size() << std::endl;
+    // for(const auto& entry : players)
+    // {
+    //     std::cout << "Entry: " << entry.first << " " << entry.second->get_name() << std::endl;
+    // }
+
+    std::multimap<int, std::shared_ptr<Player>> tmp = players;
+
+    std::string player_throw_output = "";
+    std::string player_order_output = "";
+    std::string player_rethrow_output = "Players: ";
+
+    int count = 0;
+
+    auto it = pos.begin();
+    
+    for(const auto& entry : players)
+    {
+        player_throw_output += "Player " + entry.second->get_name() + " has thrown " + std::to_string(entry.first) + "\n";
+
+        if(players.count(entry.first) == 1)
+        {
+            player_order_output += "Player " + entry.second->get_name() + " is in position " + std::to_string(pos[count] +1) + "\n";
+            vec[pos[count]] = entry.second;
+            tmp.erase(entry.first);
+            pos.erase(pos.begin() + count--);
+        }
+        count++;
+    }
+
+    std::cout << player_throw_output << std::endl;
+    std::cout << player_order_output << std::endl;
+
+    players.clear();
+
+    if(!tmp.empty()) 
+    {
+        for(const auto& entry : tmp)
+        {
+            player_rethrow_output += entry.second->get_name() + " ";
+            players.insert({dice_throw(), entry.second});
+        }
+        player_rethrow_output += "have to rethrow since they have the same number. \n";
+
+        std::cout << player_rethrow_output << std::endl;
+    }
+
+    find_unique(pos, players, vec);
 }
 
 void GameBoard::next_turn(void)
 {
+    // Check if the game is finished
+    if(this->players.size() == 1) {
+        gameFinished = true;
+        return;
+    }
+
     // Get the player at the front of the queue
     auto p = this->players.front();
+    std::cout << "Player " << p->get_name() << " is playing" << std::endl;
+
+    const int old_player_pos = p->get_position();
+    // Throw the dice
+    int dice = dice_throw();
+    p->move(dice);
+
+    // Check if the player has passed the start
+    if(p->get_position() < old_player_pos)
+    {
+        int new_balance = p->get_balance() + 20;
+        p->set_balance(new_balance);
+    }
 
     action_handler(p);
 
@@ -152,25 +230,13 @@ void GameBoard::generate_tiles(void)
 
         std::string tile_name = "";
         if(x <= 6)
-        {
-            tile_name = "A";
-            tile_name += char(x + 49);
-        }
+            tile_name = "A" + char(x + 49);
         else if(x <= 13)
-        {
-            tile_name = char(x + 58);
-            tile_name += "8";
-        }
+            tile_name = char(x + 58) + "8";
         else if(x <= 20)
-        {
-           tile_name = "H";
-           tile_name += char(70 - x);
-        }
+           tile_name = "H" + char(70 - x);
         else
-        {
-            tile_name = char(93 - x);
-            tile_name += "1";
-        }
+            tile_name = char(93 - x) + "1";
 
         if (random == 0)
             tiles[x] = std::make_unique<Tile<AngularTile>>(tile_name);
@@ -239,14 +305,13 @@ void GameBoard::show_property(void)
     {
         auto tile = this->tiles[i].get();
         if(tile->get_owner() == p1)
-            p1_property += "COORDINATA"; //tile->get_name();
+            p1_property += "COORDINATA"; //tile->get_coord();
         else if(tile->get_owner() == p2)
             p2_property += "COORDINATA";
         else if(tile->get_owner() == p3)
             p3_property += "COORDINATA";
         else
             p4_property += "COORDINATA";
-
     }
 
     std::cout<<p1_property<<"\n";

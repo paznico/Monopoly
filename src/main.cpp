@@ -26,10 +26,11 @@ void play(GameBoard &gameBoard)
 {
     // Run the game until one of the players
     // has won (or max turns are reached)
-    int i = 0;
-    while (!gameBoard.is_game_finished())
+    const int MAX_TURNS = 100;
+    int turns = 0;
+    while (!gameBoard.is_game_finished() && turns <= MAX_TURNS)
     {
-        cout << "Turno " << ++i << endl;
+        cout << "Turno " << ++turns << endl;
         gameBoard.next_turn();
     }
 

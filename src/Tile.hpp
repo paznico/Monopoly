@@ -16,7 +16,15 @@
 
 /* Constructors */
 template <typename EnumType>
-Tile<EnumType>::Tile() : status(0), owner(nullptr) {} // Default
+Tile<EnumType>::Tile() : status(0), owner(nullptr), coordinate(null) {} // Default
+
+template <typename EnumType>
+Tile<EnumType>::Tile(const std::string& coord)
+{
+    this->coordinate = coord;
+    this->status = 0;
+    this->owner = nullptr;
+}
 
 template <typename EnumType>
 Tile<EnumType>::Tile(const Tile &t) : status(t.status), owner(t.owner) {} // Copy
@@ -138,7 +146,8 @@ void Tile<EnumType>::pay_rent_house(std::shared_ptr<Player> p)
 
         /*
         int new_balance = p->get_balance() - this->rent_house;
-        p->set_balance(new_balance);
+        p->set_balance(newbalance(this->rent_house);
+        owner->add_balance);
         new_balance = owner->get_balance() + this->rent_house;
         owner->set_balance(new_balance);
         */
@@ -185,13 +194,13 @@ std::string Tile<EnumType>::get_type(void) const
     std::string tileType = typeid(EnumType).name();
 
     if (tileType.find("Cheap") != std::string::npos)
-        tileType = "cheap";
+        tileType = "economica";
     else if (tileType.find("Standard") != std::string::npos)
         tileType = "standard";
     else if (tileType.find("Luxury") != std::string::npos)
-        tileType = "luxury";
+        tileType = "lussuosa";
     else
-        tileType = "angular";
+        tileType = " ";
 
     return tileType;
 }
