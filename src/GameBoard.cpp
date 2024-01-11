@@ -12,17 +12,6 @@
  * -------------------------------------------------------------------
  */
 
-/*
-* In this implementation, we employ srand() with the current time as the seed to generate random numbers for
-* tiles generation. Without this seeding, the sequence of numbers produced by rand() would remain constant 
-* across program runs.If the reliability of the program is significantly contingent on the unpredictability 
-* of these numbers,this could introduce a security vulnerability. A player might forecast the sequence and 
-* leverage this knowledge for personal gain. However, given that the game remains unaffected by a player's 
-* awareness of the number sequence, this approach is considered safe and suitable for our purposes.
-* Meanwhile, for a more secure approach, we use the C++11 random number generation library to generate
-* random dice throws. 
-*/
-
 GameBoard::GameBoard(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2, std::shared_ptr<Player> p3, std::shared_ptr<Player> p4)
 {
 
@@ -41,12 +30,7 @@ GameBoard::GameBoard(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2, std
 void GameBoard::find_unique(std::vector<int> pos, std::multimap<int, std::shared_ptr<Player>> players, std::vector<std::shared_ptr<Player>>& vec)
 {
     if(pos.empty()) return;
-    //std::cout << "Pos size: " << pos.size() << std::endl;
-    // for(const auto& entry : players)
-    // {
-    //     std::cout << "Entry: " << entry.first << " " << entry.second->get_name() << std::endl;
-    // }
-
+    
     std::multimap<int, std::shared_ptr<Player>> tmp = players;
 
     std::string player_throw_output = "";

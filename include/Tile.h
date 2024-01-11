@@ -50,7 +50,7 @@ public:
 private:
     int status;
     std::shared_ptr<Player> owner;
-    std::string coordinate;
+    std::string coordinates;
 };
 
 template <typename EnumType>

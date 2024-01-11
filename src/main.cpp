@@ -27,10 +27,10 @@ void play(GameBoard &gameBoard)
     // Run the game until one of the players
     // has won (or max turns are reached)
     const int MAX_TURNS = 100;
-    int turns = 0;
-    while (!gameBoard.is_game_finished() && turns <= MAX_TURNS)
+    int turn_number = 0;
+    while (!gameBoard.is_game_finished() && turn_number <= MAX_TURNS)
     {
-        cout << "Turno " << ++turns << endl;
+        cout << "Turno " << ++turn_number << endl;
         gameBoard.next_turn();
     }
 
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     //      true    4 computers
     //      false   1 player and 3 computers
     bool gameType = false;
-    Logger log = Logger();
+    Logger logger;
 
     if (argc < 2)
     {

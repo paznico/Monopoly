@@ -16,12 +16,12 @@
 
 /* Constructors */
 template <typename EnumType>
-Tile<EnumType>::Tile() : status(0), owner(nullptr), coordinate(null) {} // Default
+Tile<EnumType>::Tile() : status(0), owner(nullptr), coordinates("") {} // Default
 
 template <typename EnumType>
-Tile<EnumType>::Tile(const std::string& coord)
+Tile<EnumType>::Tile(const std::string& coordinates)
 {
-    this->coordinate = coord;
+    this->coordinates = coordinates;
     this->status = 0;
     this->owner = nullptr;
 }

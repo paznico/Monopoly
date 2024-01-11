@@ -8,22 +8,20 @@
 #include <iostream>
 #include <fstream>
 
-using namespace std;
-
 class Logger
 {       
-        private:
-                ofstream fout;
-        
-        public:
-                /* Constructor */
-                Logger(void);
+private:
+    std::ofstream fout; 
 
-                /* Function that add a string */
-                void add_log(const std::string&);
+public:
+    /* Constructor */
+    Logger(void);
 
-                /* Destruttore */
-                ~Logger();
+    /* Function that adds a string */
+    void add_log(const std::string&);
+
+    /* Destructor */
+    ~Logger();
 };
 
 #endif
