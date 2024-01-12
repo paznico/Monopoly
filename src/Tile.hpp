@@ -81,9 +81,9 @@ void Tile<EnumType>::buy_terrain(std::shared_ptr<Player> p)
         status++;
 
         // Prints some debugging info (owner's balance and name)
-        std::string str = owner->get_name() + " ha acquistato il terreno " + get_coord() + "\n";
+        std::string str = owner->get_name() + " ha acquistato il terreno " + get_coord();
         Logger::get_instance().log(str);
-        std::cout << str;
+        std::cout << str << std::endl;
     }
     else
         std::cout << p->get_name() << ", non puoi costruire su questo terreno!\n";
@@ -104,9 +104,9 @@ void Tile<EnumType>::build_house(std::shared_ptr<Player> p)
         owner->set_balance(new_balance);
         status++;
 
-        std::string str = owner->get_name() + " ha costruito una casa sul terreno " + get_coord() + "\n";
+        std::string str = owner->get_name() + " ha costruito una casa sul terreno " + get_coord();
         Logger::get_instance().log(str);
-        std::cout << str;
+        std::cout << str << std::endl;
     }
     else
         std::cout << p->get_name() << ", non puoi costruire una casa su questo terreno!\n";
@@ -127,9 +127,9 @@ void Tile<EnumType>::build_hotel(std::shared_ptr<Player> p)
         owner->set_balance(new_balance);
         status++;
 
-        std::string str = owner->get_name() + " ha migliorato una casa in albergo sul terreno " + get_coord() + "\n";
+        std::string str = owner->get_name() + " ha migliorato una casa in albergo sul terreno " + get_coord();
         Logger::get_instance().log(str);
-        std::cout << str;
+        std::cout << str << std::endl;
     }
     else
         std::cout << p->get_name() << ", non puoi costruire un hotel su questo terreno!\n";
@@ -141,25 +141,19 @@ void Tile<EnumType>::pay_rent_house(std::shared_ptr<Player> p)
     if(status == 1 && p != owner)
     {
         if(p->get_balance() < this->rent_house) {
-            std::cout << p->get_name() << " e' stato eliminato!\n";
+            std::string str = p->get_name() << " e' stato eliminato!";
+            std::cout << str << std::endl;
+            Logger::get_instance().log(str);
             return;
         }
         
         p->sub_balance(this->rent_house);
         owner->add_balance(this->rent_house);
 
-        /*
-        int new_balance = p->get_balance() - this->rent_house;
-        p->set_balance(newbalance(this->rent_house);
-        owner->add_balance);
-        new_balance = owner->get_balance() + this->rent_house;
-        owner->set_balance(new_balance);
-        */
-
         std::string str = p->get_name() + " ha pagato " + std::to_string(this->rent_house) + " a " + owner->get_name() +
-         " per pernottamento nella casella " + get_coord() + "\n";
+         " per pernottamento nella casella " + get_coord();
         Logger::get_instance().log(str);
-        std::cout << str;
+        std::cout << str << std::endl;
     }
     else
         std::cout << p->get_name() << ", non puoi pagare l'affitto su questo terreno!\n";
@@ -171,16 +165,18 @@ void Tile<EnumType>::pay_rent_hotel(std::shared_ptr<Player> p)
     if(status == 1 && p != owner)
     {
         if(p->get_balance() < this->rent_hotel) {
-            std::cout << p->get_name() << " e' stato eliminato!\n";
+            std::string str = p->get_name() << " e' stato eliminato!";
+            std::cout << str << std::endl;
+            Logger::get_instance().log(str);
             return;
         }
         p->sub_balance(this->rent_hotel);
         owner->add_balance(this->rent_hotel);
 
         std::string str = p->get_name() + " ha pagato " + std::to_string(this->rent_hotel) + " fiorini a " + owner->get_name() +
-         "per pernottamento nella casella " + get_coord() + "\n";
+         "per pernottamento nella casella " + get_coord();
         Logger::get_instance().log(str);
-        std::cout << str;
+        std::cout << str << std::endl;
     }
     else
         std::cout << p->get_name() << ", non puoi pagare l'affitto in questa casella!\n";

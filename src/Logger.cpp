@@ -6,8 +6,8 @@
 
 Logger::Logger(void)
 {
-    fout.open("log.txt", std::ios_base::app); /*| std::ios::trunc);*/                                 // Open the file in the constructor
-    fout << "La partita e' iniziata!";
+    fout.open("log.txt");                                                                       // Open the file in the constructor
+    fout << "La partita e' iniziata! \n";
     if (!fout.is_open())
         std::cerr << "Errore nell'apertura del file di log." << std::endl;                      // Error opening file
 }

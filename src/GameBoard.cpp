@@ -87,28 +87,29 @@ void GameBoard::next_turn(void)
 
     // Get the player at the front of the queue
     auto p = this->players.front();
-    std::string str = "E' il turno di " + p->get_name() + "! \n";
-    std::cout << str;
+    std::string str = "E' il turno di " + p->get_name() + "!";
+    std::cout << str << std::endl;
     Logger::get_instance().log(str);
 
     const int old_player_pos = p->get_position();
     // Throw the dice
     int dice = dice_throw();
-    str = p->get_name() + " ha tirato i dadi ottenendo un valore di " + std::to_string(dice) + "\n";
-    std::cout << str;
+    str = p->get_name() + " ha tirato i dadi ottenendo un valore di " + std::to_string(dice);
+    std::cout << str << std::endl;
     Logger::get_instance().log(str);
     p->move(dice);
 
     auto tile = this->tiles[p->get_position()].get();
-    str = p->get_name() + " e' arrivato alla casella " + tile->get_coord() + "\n";
-    std::cout << str;
+    str = p->get_name() + " e' arrivato alla casella " + tile->get_coord();
+    std::cout << str << std::endl;
     Logger::get_instance().log(str);
 
     // Check if the player has passed the start
     if (p->get_position() < old_player_pos)
     {
         p->add_balance(5);
-        std::string str = p->get_name() + " e' passato per il via e ha ritirato 20 fiorini \n";
+        std::string str = p->get_name() + " e' passato per il via e ha ritirato 20 fiorini!";
+        std::cout << str << std::endl; 
         Logger::get_instance().log(str);
     }
 
@@ -140,8 +141,14 @@ void GameBoard::action_handler(std::shared_ptr<Player> p)
 
     while (!end_turn)
     {
-        // Different choice based on the tile type and status
-        if (status == 0)
+        // Check if it's an angular tile
+        if(tile->get_type() == " ")
+        {
+            end_turn = true;
+        }
+
+         // Different choice based on the tile type and status
+        if ((status == 0) && (end_turn == false))
         {
             // Ask the player if he wants to buy the terrain
             std::cout << "Vuoi comprare il terreno? (S/N/M <Si/No/Mostra tabellone>)" << std::endl;
@@ -150,7 +157,7 @@ void GameBoard::action_handler(std::shared_ptr<Player> p)
             if (choice == 'S')
                 tile->buy_terrain(p);
         }
-        else
+        else if(end_turn == false)
         {
             if (tile->get_owner() == p)
             {
@@ -177,9 +184,9 @@ void GameBoard::action_handler(std::shared_ptr<Player> p)
             }
             else
             {
-                if (status == 1)
+                if (status == 2)
                     tile->pay_rent_house(p);
-                else if (status == 2)
+                else if (status == 3)
                     tile->pay_rent_hotel(p);
                 end_turn = true;
             }

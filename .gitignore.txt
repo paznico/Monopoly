@@ -1,0 +1,12 @@
+# Ignora questo file
+.gitignore
+
+# Ignora cartelle con eseguibili o librerie o file per la compilazione
+build/*
+bin/*
+
+# Ignora file di vscode
+.vscode
+
+# Ignora file spazzatura
+.DS_Store
