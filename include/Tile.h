@@ -38,7 +38,7 @@ public:
     void reset(void) override;
 
     std::string get_type(void) const override;
-    std::string get_coord(void) const { return this->coordinat; };
+    std::string get_coord(void) const override { return this->coordinates; };
 
 
     const int cost_property = static_cast<int>(EnumType::COST_PROPERTY);

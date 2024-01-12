@@ -13,7 +13,7 @@ Robot::Robot(void)
 {
     static int cnt = 0; 
     this->balance = initial_balance;
-    name = (cnt == 0) ? "GianmariaTheRobot" : (cnt == 1) ? "MechaMario"  : (cnt == 2) ? "CircuitFilippo" : "GennaroIlBullo";
+    name = (cnt == 0) ? "Giocatore 1" : (cnt == 1) ? "Giocatore 2"  : (cnt == 2) ? "Giocatore 3" : "Giocatore 4";
     cnt++;
 }
 
@@ -58,7 +58,7 @@ bool make_choice(void)
     srand(time(NULL));
     int choice = (rand() % 3);
     if(choice == 0)
-        return 1;                               // Return 1 if the robot will buy the land or build a house (25%)
+        return true;                               // Return 1 if the robot will buy the land or build a house (25%)
     else
-        return 0;                               // Return 0 if the robot will not buy the land or build a house (75%)
+        return false;                               // Return 0 if the robot will not buy the land or build a house (75%)
 }

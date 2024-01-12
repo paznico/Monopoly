@@ -1,5 +1,5 @@
 /*
- *  Authors: Leonardo Mosele & Niccolò Pasetto & Davide Saladino
+ *  Authors: Niccolò Pasetto
  */
 
 #include <iostream>
@@ -17,49 +17,57 @@ using namespace std;
 
 /*
  * ----------------------------- Main -------------------------------
- * TODO: -
+ * TODO: Controlli sulla vittoria
  *
  * ------------------------------------------------------------------
  */
 
 void play(GameBoard &gameBoard)
 {
-    // Run the game until one of the players
-    // has won (or max turns are reached)
-    const int MAX_TURNS = 100;
-    int turn_number = 0;
-    while (!gameBoard.is_game_finished() && turn_number <= MAX_TURNS)
+    const unsigned int MAX_TURNS = 1000;
+    unsigned int turn_number = 0;
+    // Ciclo principale del gioco, si ripete finchè
+    // ci sono giocatori in gioco e finchè non viene
+    // superato il limite di turni
+    while(!gameBoard.is_game_finished() && turn_number <= MAX_TURNS)
     {
-        cout << "Turno " << ++turn_number << endl;
+        cout<< "\nTurno "<<++turn_number<<endl;
         gameBoard.next_turn();
     }
 
-    cout << "Game finished!\n";
+    if(turn_number >= MAX_TURNS)
+    {
+        cout<<"\nPartita terminata, superato numero turni massimo!\n";
+        // Stampa ordine giocatori per fiorini
+        // Vince il piu' ricco
+    }
+    // Stampare chi ha vinto e passare il messaggio al logger
+    cout<<"Gioco finito! Qualcuno ha vinto\n";
 
     return;
 }
 
 int main(int argc, char *argv[])
 {
-
-    // Defines the game type:
+    srand(time(NULL));
+    // Definisce il tipo di partita
     //      true    4 computers
-    //      false   1 player and 3 computers
+    //      false   1 giocatore e 3 computers
     bool gameType = false;
     Logger logger;
 
-    if (argc < 2)
+    if(argc < 2)
     {
-        cout << "[!] Insufficient command-line arguments provided\n";
-        cout << "Example:\n\t$ ./executable_name human";
-        cout << "\n\t$ ./executable_name computer\n";
+        cout<<"[!] Numero di argomenti passati da terminale insufficienti\n";
+        cout<<"Esempi:\n\t$ ./monopoly human";
+        cout<<"\n\t$ ./monopoly\n";
         return -1;
     }
-    else if (argc > 2)
+    else if(argc > 2)
     {
-        cout << "[!] Too many command-line arguments passed\n";
-        cout << "Examples:\n\t$ ./executable_name human";
-        cout << "\n\t$ ./executable_name computer\n";
+        cout<<"[!] Troppi argomenti passati da terminale\n";
+        cout<<"Esempi:\n\t$ ./monopoly human";
+        cout<<"\n\t$ ./monopoly computer\n";
         return -1;
     }
     else
@@ -67,18 +75,18 @@ int main(int argc, char *argv[])
         char *str = argv[1];
         string arg = "";
         int i = 0;
-        while (str[i] != '\0')
+        while(str[i] != '\0')
             arg += tolower(str[i++]);
 
-        if (arg == "computer")
+        if(arg == "computer")
             gameType = true;
-        else if (arg == "human")
+        else if(arg == "human")
             gameType = false;
         else
         {
-            cout << "[!] Invalid command-line argument\n";
-            cout << "Examples:\n\t$ ./executable_name human";
-            cout << "\n\t$ ./executable_name computer\n";
+            cout<<"[!] Argomento passato da terminale invalido\n";
+            cout<<"Esempi:\n\t$ ./monopoly human";
+            cout<<"\n\t$ ./monopoly computer\n";
             return -1;
         }
     }
@@ -88,7 +96,7 @@ int main(int argc, char *argv[])
     shared_ptr<Player> p3;
     shared_ptr<Player> p4;
 
-    if (gameType)
+    if(gameType)
     {
         p1 = make_shared<Robot>();
         p2 = make_shared<Robot>();
@@ -105,9 +113,9 @@ int main(int argc, char *argv[])
             cin>>name;
 			if(name.length() <= 2)
 				cout<<"\nNome troppo corto!\n\n";
-			else if(name.length() >=20)
+			else if(name.length() >= 20)
 				cout<<"\nNome troppo lungo!\n\n";
-			else if(name == "LucaTonin")
+			else if(name == "LucaTonin" || name == "ltonin")
 			{
 				ask = true;
 				cout<<"\nBenvenuto prof, ha già vinto\n";
@@ -115,7 +123,7 @@ int main(int argc, char *argv[])
 			else
 				ask = true;
         }
-		while (name.length() < 2 || name.length() > 10);
+		while(name.length() < 2 || name.length() > 10);
 
         p1 = make_shared<Player>(name);
         p2 = make_shared<Robot>();

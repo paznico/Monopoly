@@ -16,7 +16,7 @@
 #include <memory>
 #include <random>
 #include <vector>
-#include <queue>
+#include <deque>
 #include <map>
 
 /*
@@ -34,17 +34,18 @@
 class GameBoard
 {
 private:
-    std::queue<std::shared_ptr<Player>> players;
+    std::deque<std::shared_ptr<Player>> players;
     std::vector<std::unique_ptr<BaseTile>> tiles = std::vector<std::unique_ptr<BaseTile>>(28);
     bool gameFinished = false;
     
 public:
 
+    /* Constructor */
     GameBoard(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2, std::shared_ptr<Player> p3, std::shared_ptr<Player> p4);
     GameBoard(GameBoard &);
     GameBoard(GameBoard &&);
 
-
+    /* Functions */
     void find_unique(std::vector<int> pos, std::multimap<int, std::shared_ptr<Player>> players, std::vector<std::shared_ptr<Player>>& vec);
     void generate_tiles(void);
     bool is_game_finished(void) const { return this->gameFinished; };
@@ -54,7 +55,7 @@ public:
     int dice_throw(void) const;
     void action_handler(std::shared_ptr<Player>);
     void show(void);
-    void show_property(void);
+    void show_holdings(void);
 };
 
 #endif

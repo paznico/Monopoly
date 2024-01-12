@@ -5,6 +5,7 @@
 #define TILE_HPP
 
 #include "../include/Tile.h"
+#include "../include/Logger.h"
 
 /*
 * ----------------------- Tile implementation -----------------------
@@ -72,7 +73,7 @@ std::shared_ptr<Player> Tile<EnumType>::get_owner(void) const
 template <typename EnumType>
 void Tile<EnumType>::buy_terrain(std::shared_ptr<Player> p)
 {
-    if (status == 0 && p->get_balance() >= cost_property)
+    if (status == 0 && p->get_balance() >= cost_property && get_type() != " ")
     {
         owner = p;
         int new_balance = owner->get_balance() - cost_property;
@@ -80,11 +81,12 @@ void Tile<EnumType>::buy_terrain(std::shared_ptr<Player> p)
         status++;
 
         // Prints some debugging info (owner's balance and name)
-        std::cout << owner->get_name() << " bought a " << get_type() << " tile!" << std::endl;
-        std::cout << "\t" << owner << std::endl;
+        std::string str = owner->get_name() + " ha acquistato il terreno " + get_coord() + "\n";
+        Logger::get_instance().log(str);
+        std::cout << str;
     }
     else
-        std::cout << p->get_name() << ", you can't build on this tile!\n";
+        std::cout << p->get_name() << ", non puoi costruire su questo terreno!\n";
 }
 
 template <typename EnumType>
@@ -92,7 +94,7 @@ void Tile<EnumType>::build_house(std::shared_ptr<Player> p)
 {
     if (!owner)
     {
-        std::cout << "This tile has yet to be purchased!!\n";
+        std::cout << "Questo terreno deve ancora essere acquistato!!\n";
         return;
     }
 
@@ -102,11 +104,12 @@ void Tile<EnumType>::build_house(std::shared_ptr<Player> p)
         owner->set_balance(new_balance);
         status++;
 
-        std::cout << owner->get_name() << " built a house on a " << get_type() << " tile!\n";
-        std::cout << "\t" << owner << std::endl;
+        std::string str = owner->get_name() + " ha costruito una casa sul terreno " + get_coord() + "\n";
+        Logger::get_instance().log(str);
+        std::cout << str;
     }
     else
-        std::cout << p->get_name() << ", you can't build a house on this tile!\n";
+        std::cout << p->get_name() << ", non puoi costruire una casa su questo terreno!\n";
 }
 
 template <typename EnumType>
@@ -114,7 +117,7 @@ void Tile<EnumType>::build_hotel(std::shared_ptr<Player> p)
 {
     if (!owner)
     {
-        std::cout << "This tile has yet to be purchased!!\n";
+        std::cout << "Questo terreno deve ancora essere acquistato!!\n";
         return;
     }
 
@@ -124,11 +127,12 @@ void Tile<EnumType>::build_hotel(std::shared_ptr<Player> p)
         owner->set_balance(new_balance);
         status++;
 
-        std::cout << owner->get_name() << " built an hotel on a " << get_type() << " tile!\n";
-        std::cout << "\t" << owner << std::endl;
+        std::string str = owner->get_name() + " ha migliorato una casa in albergo sul terreno " + get_coord() + "\n";
+        Logger::get_instance().log(str);
+        std::cout << str;
     }
     else
-        std::cout << p->get_name() << ", you can't build an hotel on this tile!\n";
+        std::cout << p->get_name() << ", non puoi costruire un hotel su questo terreno!\n";
 }
 
 template <typename EnumType>
@@ -137,7 +141,7 @@ void Tile<EnumType>::pay_rent_house(std::shared_ptr<Player> p)
     if(status == 1 && p != owner)
     {
         if(p->get_balance() < this->rent_house) {
-            std::cout << p->get_name() << " is bankrupt!\n";
+            std::cout << p->get_name() << " e' stato eliminato!\n";
             return;
         }
         
@@ -152,12 +156,13 @@ void Tile<EnumType>::pay_rent_house(std::shared_ptr<Player> p)
         owner->set_balance(new_balance);
         */
 
-        std::cout << p->get_name() << " paid " << this->rent_house << " to " << owner->get_name() << std::endl;
-        std::cout << "\t" << p << std::endl;
-        std::cout << "\t" << owner << std::endl;
+        std::string str = p->get_name() + " ha pagato " + std::to_string(this->rent_house) + " a " + owner->get_name() +
+         " per pernottamento nella casella " + get_coord() + "\n";
+        Logger::get_instance().log(str);
+        std::cout << str;
     }
     else
-        std::cout << p->get_name() << ", you can't pay rent on this tile!\n";
+        std::cout << p->get_name() << ", non puoi pagare l'affitto su questo terreno!\n";
 }
 
 template <typename EnumType>
@@ -166,18 +171,19 @@ void Tile<EnumType>::pay_rent_hotel(std::shared_ptr<Player> p)
     if(status == 1 && p != owner)
     {
         if(p->get_balance() < this->rent_hotel) {
-            std::cout << p->get_name() << " is bankrupt!\n";
+            std::cout << p->get_name() << " e' stato eliminato!\n";
             return;
         }
         p->sub_balance(this->rent_hotel);
         owner->add_balance(this->rent_hotel);
 
-        std::cout << p->get_name() << " paid " << this->rent_hotel << " to " << owner->get_name() << std::endl;
-        std::cout << "\t" << p << std::endl;
-        std::cout << "\t" << owner << std::endl;
+        std::string str = p->get_name() + " ha pagato " + std::to_string(this->rent_hotel) + " fiorini a " + owner->get_name() +
+         "per pernottamento nella casella " + get_coord() + "\n";
+        Logger::get_instance().log(str);
+        std::cout << str;
     }
     else
-        std::cout << p->get_name() << ", you can't pay rent on this tile!\n";
+        std::cout << p->get_name() << ", non puoi pagare l'affitto in questa casella!\n";
 }
 
 template <typename EnumType>
@@ -209,7 +215,7 @@ std::string Tile<EnumType>::get_type(void) const
 template <typename EnumType>
 std::ostream &operator<<(std::ostream &os, const Tile<EnumType> &t)
 {
-    return os << t.get_type() << " tile: " << t.get_status() << " " << t.get_owner() << "\n";
+    return os << t.get_type() << " casella: " << t.get_status() << " " << t.get_owner() << "\n";
 }
 
 #endif

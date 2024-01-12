@@ -1,10 +1,11 @@
 /*
- * Autore file: Davide Saladino
+ * Autore file: Leonardo Mosele
  */
 #ifndef BASETILE_H
 #define BASETILE_H
 
 #include "Player.h"
+#include <memory>
 
 /*
  * --------------------- BaseTile abstract class ---------------------
@@ -16,10 +17,10 @@
 
 class BaseTile {
 public:
-    virtual ~BaseTile() = default;
-
     virtual unsigned int get_status() const = 0;
     virtual std::shared_ptr<Player> get_owner() const = 0;
+
+    virtual std::string get_coord(void) const = 0;
 
     virtual void buy_terrain(std::shared_ptr<Player>) = 0;
     virtual void build_house(std::shared_ptr<Player>) = 0;
