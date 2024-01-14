@@ -28,7 +28,7 @@ class Robot : public Player
         /*
         Funzione che ritorna 0 o 1 per l'acquisto di un terreno di una casa o di un hotel.
         */
-        bool make_choice(void);
+        unsigned int make_choice(void) const override;
 };
 
 #endif
