@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Constants.h"
 #include "BaseTile.h"
+#include "Logger.h"
 
 /*
 * ----------------------- Tile template class -----------------------

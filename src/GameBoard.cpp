@@ -2,12 +2,20 @@
  * Autore file: Davide Saladino
  */
 #include "../include/GameBoard.h"
+#include <iomanip>
 
 /*
  * ------------------- GameBoard implementation ---------------------
- * TODO: - implement copy constructor and move constructor (?)
+ * TODO: DEBUGG sostituire i 5 fiorini dal via con 20
+ * 			Controllare logica action handler
  * -------------------------------------------------------------------
  */
+
+/*
+    Siccome usiamo gli unique_ptr su tiles non possiamo farne la copia!
+    Ho disabilitato copia/spostamento, se volete controllare anche voi
+    Lo spostamento secondo me va fatto ma non saprei come
+*/
 
 GameBoard::GameBoard(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2, std::shared_ptr<Player> p3, std::shared_ptr<Player> p4)
 {
@@ -74,13 +82,15 @@ void GameBoard::find_unique(std::vector<int> pos, std::multimap<int, std::shared
 
 void GameBoard::next_turn(void)
 {
-
-    for (int i = 0; i < 4; i++)
-        std::cout << players.at(i)->get_name() << std::endl;
+    // for (int i = 0; i < 4; i++)
+    //     std::cout << players.at(i)->get_name() << std::endl;
 
     // Check if the game is finished
     if (this->players.size() == 1)
     {
+		std::string str = "Il gioco e' finito, ha vinto " + players.front()->get_name() + "!";
+		std::cout<<str;
+    	Logger::get_instance().log(str);
         gameFinished = true;
         return;
     }
@@ -107,9 +117,10 @@ void GameBoard::next_turn(void)
     // Check if the player has passed the start
     if (p->get_position() < old_player_pos)
     {
-        p->add_balance(5);
+        // DEBUG, deve tornare a 20
+        p->set_balance(p->get_balance() + 5);
         std::string str = p->get_name() + " e' passato per il via e ha ritirato 20 fiorini!";
-        std::cout << str << std::endl; 
+        std::cout << str << std::endl;
         Logger::get_instance().log(str);
     }
 
@@ -136,28 +147,26 @@ void GameBoard::action_handler(std::shared_ptr<Player> p)
     auto tile = this->tiles[pos].get();
     int status = tile->get_status();
 
-    char choice;
+    unsigned int choice = 0;
     bool end_turn = false;
 
     while (!end_turn)
     {
         // Check if it's an angular tile
-        if(tile->get_type() == " ")
-        {
+        if (tile->get_type() == " ")
             end_turn = true;
-        }
 
-         // Different choice based on the tile type and status
+        // Different choice based on the tile type and status
         if ((status == 0) && (end_turn == false))
         {
             // Ask the player if he wants to buy the terrain
             std::cout << "Vuoi comprare il terreno? (S/N/M <Si/No/Mostra tabellone>)" << std::endl;
-            std::cin >> choice;
+			choice = p->make_choice();
 
-            if (choice == 'S')
+            if (choice == 1)
                 tile->buy_terrain(p);
         }
-        else if(end_turn == false)
+        else if (end_turn == false)
         {
             if (tile->get_owner() == p)
             {
@@ -165,18 +174,18 @@ void GameBoard::action_handler(std::shared_ptr<Player> p)
                 {
                     // Ask the player if he wants to build a house
                     std::cout << "Vuoi costruire una casa? (S/N/M <Si/No/Mostra tabellone>)" << std::endl;
-                    std::cin >> choice;
+					choice = p->make_choice();
 
-                    if (choice == 'S')
+                    if (choice == 1)
                         tile->build_house(p);
                 }
                 else if (status == 2)
                 {
                     // Ask the player if he wants to build an hotel
                     std::cout << "Vuoi migliorare la casa in hotel? (S/N/M <Si/No/Mostra tabellone>)" << std::endl;
-                    std::cin >> choice;
+					choice = p->make_choice();
 
-                    if (choice == 'S')
+                    if (choice == 1)
                         tile->build_hotel(p);
                 }
                 else if (status == 3)
@@ -189,22 +198,27 @@ void GameBoard::action_handler(std::shared_ptr<Player> p)
                 else if (status == 3)
                     tile->pay_rent_hotel(p);
                 end_turn = true;
+
+                if (p->get_balance() <= 0)
+                {
+                    this->players.pop_front();
+                    return;
+                }
             }
         }
 
-        if (choice == 'M')
+        if (choice == 2)
         {
             std::cout << "Tabellone:" << std::endl;
             this->show();
         }
-        else if (choice == 'S' || choice == 'N')
+        else if (choice == 1 || choice == 0)
             end_turn = true;
     }
 }
 
 void GameBoard::generate_tiles(void)
 {
-    srand(time(NULL));
     int max_cheap = 8, max_standard = 10, max_luxury = 6;
 
     for (int x = 0; x < tiles.size(); x++)
@@ -240,12 +254,6 @@ void GameBoard::generate_tiles(void)
             }
 
         } while (random == -1 && (max_cheap != 0 || max_standard != 0 || max_luxury != 0));
-
-        // Debugging info
-        // std::cout << "Random: " << random << std::endl;
-        // std::cout << "Max cheap: " << max_cheap << std::endl;
-        // std::cout << "Max standard: " << max_standard << std::endl;
-        // std::cout << "Max luxury: " << max_luxury << std::endl;
 
         std::string tile_coord = "";
         if (x <= 6)
@@ -286,21 +294,16 @@ void GameBoard::show()
     int k = 0;
     int l = this->tiles.size() - 1;
 
-    std::shared_ptr<Player> p1 = this->players.at(0);
-    std::shared_ptr<Player> p2 = this->players.at(1);
-    std::shared_ptr<Player> p3 = this->players.at(2);
-    std::shared_ptr<Player> p4 = this->players.at(3);
-
-    // Print col coordinates A to H
+    std::cout << std::setw(6) << std::left << " ";
     for (int i = 0; i < n; ++i)
-        std::cout << "\t  " << i + 1 << "  \t";
+        std::cout << std::setw(10) << std::left << i + 1;
 
     std::cout << std::endl
               << std::endl;
 
     for (int i = 0; i < n; ++i)
     {
-        std::cout << char(i + 65);
+        std::cout << std::setw(4) << std::left << char(i + 65);
 
         for (int j = 0; j < n; ++j)
         {
@@ -315,10 +318,10 @@ void GameBoard::show()
                 else
                     index = k++;
 
-                std::string out = "\t| ";
+                std::string out = "| ";
 
                 if (index == 0)
-                    out = "\t| P";
+                    out = "| P";
                 else
                     out += char(toupper(this->tiles[index].get()->get_type()[0]));
 
@@ -327,55 +330,80 @@ void GameBoard::show()
                 if (this->tiles[index].get()->get_status() == 3)
                     out += "^";
 
-                if (index == p1->get_position())
-                    out += p1->get_name().at(p1->get_name().size() - 1);
-                if (index == p2->get_position())
-                    out += p2->get_name().at(p2->get_name().size() - 1);
-                if (index == p3->get_position())
-                    out += p3->get_name().at(p3->get_name().size() - 1);
-                if (index == p4->get_position())
-                    out += p4->get_name().at(p4->get_name().size() - 1);
+                for (std::shared_ptr<Player> p : this->players)
+                    if (index == p->get_position())
+                        out += p->get_name().at(p->get_name().size() - 1);
 
-                out += " |\t";
-                std::cout << out;
+                out += " |";
+                std::cout << std::setw(10) << std::left << out;
 
                 if (j == n - 1)
                     std::cout << std::endl;
             }
             else
-                std::cout << "\t   \t";
+                std::cout << std::setw(10) << std::left << " ";
         }
 
         std::cout << std::endl;
     }
 
-    std::string p1_property = p1->get_name() + ": ";
-    std::string p2_property = p2->get_name() + ": ";
-    std::string p3_property = p3->get_name() + ": ";
-    std::string p4_property = p4->get_name() + ": ";
+    std::cout << "Proprieta' possedute giocatori:\n";
 
-    for (int i = 0; i < tiles.size(); i++)
+    for (auto &player : players)
     {
-        auto tile = this->tiles[i].get();
-        if (tile->get_owner() == p1)
-            p1_property += tile->get_coord() + " ";
-        if (tile->get_owner() == p2)
-            p2_property += tile->get_coord() + " ";
-        if (tile->get_owner() == p3)
-            p3_property += tile->get_coord() + " ";
-        if (tile->get_owner() == p4)
-            p4_property += tile->get_coord() + " ";
+        std::string player_property = player->get_name() + ": ";
+        for (auto &tile : tiles)
+        {
+            if (tile->get_owner() == player)
+                player_property += tile->get_coord() + " ";
+        }
+        std::cout << player_property << "\n";
     }
 
-    std::cout << "Proprieta' possedute giocatori:\n";
-    std::cout << p1_property << "\n";
-    std::cout << p2_property << "\n";
-    std::cout << p3_property << "\n";
-    std::cout << p4_property << "\n\n";
+    std::cout << "\nFiorini posseduti dai giocatori:\n";
+    for (auto &player : players)
+    {
+        std::cout << *(player.get());
+    }
+    std::cout << "\n";
+}
 
-    std::cout << "Fiorini posseduti dai giocatori:\n";
-    std::cout << *(p1.get());
-    std::cout << *(p2.get());
-    std::cout << *(p3.get());
-    std::cout << *(p4.get()) << "\n";
+void GameBoard::get_results(void) const
+{
+	std::vector<std::shared_ptr<Player>> win_order = std::vector<std::shared_ptr<Player>>();
+	int max = -1;
+
+	std::cout<<"\nGiocatori rimasti fino alla fine:\n";
+
+	for(auto &player : players)
+	{
+		if(player->get_balance() == max)
+			win_order.push_back(player);
+		else if(player->get_balance() > max)
+		{
+			win_order.clear();
+			win_order.push_back(player);
+			max = player->get_balance();
+		}
+
+		std::cout<<*(player.get());
+	}
+
+	std::cout<<std::endl;
+
+	if(win_order.size() == 1)
+	{
+		std::string str = win_order.at(0)->get_name() + " ha vinto per numero di fiorini posseduti!";
+		std::cout<<str<<std::endl;
+    	Logger::get_instance().log(str);
+	}
+	else
+	{
+		for(auto &player : win_order)
+		{
+			std::string str = player->get_name() + " ha vinto a parimerito per numero di fiorini posseduti!";
+			std::cout<<str<<std::endl;
+    		Logger::get_instance().log(str);
+		}
+	}
 }

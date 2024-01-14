@@ -1,7 +1,7 @@
 # Progetto finale - Monopoly
 
 Progetto di gruppo finale per Laboratorio di Programmazione 23-34
-Implementazione di una versione semplificata del famoso gioco da tavolo Hasbro Monopoly®
+Implementazione di una versione semplificata del famoso gioco da tavolo Monopoly
 
 ## **AUTORI**
  
@@ -19,7 +19,7 @@ Implementazione di una versione semplificata del famoso gioco da tavolo Hasbro M
 
 ## **NOTE IN FASE DI COMPILAZIONE**
 
-Nella scrittura del file _CMakeLists.txt_ abbiamo risconrato dei problemi con la versione di _CMake_ e _C++_
+Nella scrittura del file _CMakeLists.txt_ abbiamo riscontrato dei problemi con la versione di _CMake_ e _C++_
 Per rendere compilabile il progetto abbimo dovuto impostare:
 
  - La versione minima richiesta di C++ a 14 (per utilizzare gli _shared ptr_)
@@ -31,12 +31,12 @@ Nelle nostre macchine virtuali con questi cambiamenti il progetto compilava, spe
 
 ## **COMPILAZIONE**
 
-Per la compilazione dei diversi file che compongono il progetto viene usato _CMake_ (v3.28.0), che genere il file specifico _make_.
-Per compilarlo eseguire i seguenti passaggi nella cartella base del progetto nel terminale:
+Per la compilazione dei diversi file che compongono il progetto viene usato _CMake_ (v3.28.0), che genera automaticamente il file specifico _make_
+Per compilarlo eseguire i seguenti passaggi nella cartella base del progetto da terminale:
 
  - ``` $ mkdir build ```
  - ``` $ cd build ```
  - ``` $ cmake .. ```
  - ``` $ make ```
 
-A questo punto i l'eseguibile e il file _log.txt_ si troveranno nella cartella _bin/_
+A questo punto l'eseguibile e, successivamente, il file _log.txt_ si troveranno nella cartella _bin/

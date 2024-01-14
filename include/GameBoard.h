@@ -31,6 +31,12 @@
  * -------------------------------------------------------------------
  */
 
+/*
+	Siccome usiamo gli unique_ptr su tiles non possiamo farne la copia!
+	Ho disabilitato copia/spostamento, controllare anche voi
+	Secondo me lo spostamento bisogna farlo però non saprei come
+*/
+
 class GameBoard
 {
 private:
@@ -42,8 +48,12 @@ public:
 
     /* Constructor */
     GameBoard(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2, std::shared_ptr<Player> p3, std::shared_ptr<Player> p4);
-    GameBoard(GameBoard &);
+	GameBoard(const GameBoard&) = delete;
     GameBoard(GameBoard &&);
+
+	/* Operators overloading */
+	GameBoard& operator=(const GameBoard&) = delete;
+	GameBoard& operator=(GameBoard&&);
 
     /* Functions */
     void find_unique(std::vector<int> pos, std::multimap<int, std::shared_ptr<Player>> players, std::vector<std::shared_ptr<Player>>& vec);
@@ -56,6 +66,7 @@ public:
     void action_handler(std::shared_ptr<Player>);
     void show(void);
     void show_holdings(void);
+	void get_results(void) const;
 };
 
 #endif

@@ -1,12 +1,12 @@
 /*
- *  Author: Niccolò Pasetto
+ *  Author: Pasetto Niccolò
  */
 
 #include "../include/Player.h"
 
 Player::Player(void)
 {
-    this->balance = 100;
+    this->balance = this->initial_balance;
     this->name = "";
     this->position = 0;
 }
@@ -44,7 +44,7 @@ Player &Player::operator=(Player &&p)
     return *this;
 }
 
-unsigned int Player::get_balance(void) const
+int Player::get_balance(void) const
 {
     return this->balance;
 }
@@ -54,29 +54,14 @@ std::string Player::get_name(void) const
     return this->name;
 }
 
-int Player::get_position(void)
+int Player::get_position(void) const
 {
     return this->position;
 }
 
-void Player::add_balance(unsigned int amount)
-{
-    this->balance += amount;
-}
-
-bool Player::sub_balance(unsigned int amount)
-{
-    if(this->balance < amount)
-        return false;
-    else
-        this->balance -= amount;
-    
-    return true;
-}
-
 void Player::set_balance(int new_balance)
 {
-    if(new_balance <= 0)
+    if(new_balance < 0)
         return;
     else
         this->balance = new_balance;
@@ -85,6 +70,18 @@ void Player::set_balance(int new_balance)
 void Player::move(const unsigned int pos)
 {
     this->position = (this->position + pos) % 28;
+}
+
+unsigned int Player::make_choice(void) const
+{
+	std::string choice = " ";
+	std::cin>>choice;
+	if(choice.at(0) == 'M')
+		return 2;
+	else if(choice.at(0) == 'S')
+		return 1;
+	else
+		return 0;
 }
 
 std::ostream &operator<<(std::ostream &os, const Player &p)

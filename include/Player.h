@@ -1,5 +1,5 @@
 /*
- *  Author: Niccolò Pasetto
+ *  Autore: Pasetto Niccolò
  */
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -7,44 +7,76 @@
 #include <iostream>
 
 /*
- * Descrizione classe
+ * Classe che descrive un giocatore 'umano' per il gioco
+ * del Monopoly, infatti le scelte all'interno del gioco 
+ * vengono prese in input dall'utente a tempo di esecuzione
  */
-class Player 
+class Player
 {
+    /*
+     * Variabili di classe
+     * Abbiamo deciso di usare il modificatore di accesso 'protected'
+     * in modo che la classe derivata 'Robot' possa accedere a queste
+     * variabili, senza tuttavia renderle pubbliche al di fuori della classe
+     */
     protected:
-        const unsigned int initial_balance = 100;               // Costante che definice il bilancio iniziale
-        unsigned int balance;                                   // Available balance
-        std::string name;                                       // Player name
-        int position;
+        // Costante che definisce il bilancio iniziale
+        const int initial_balance = 100;
+        // Bilancio del giocatore
+        int balance;
+        // Nome del giocatore
+        std::string name;
+        // Posizione del giocatore, viene usato unsigned int
+        // perchè il valore non potrà mai essere < 0
+        unsigned int position;
 
     public:
-        /* Constructor */
-        Player(void);                                           // Default
-        Player(std::string);                                    // Constructor
-        Player(const Player&) = delete;                         // Copy constructor
-        Player(Player&&);                                       // Move constructor
+        /* Costruttori */
+        // Default
+        Player(void);
+        // Inizializza il nome al giocatore
+        Player(std::string);
+        // Copia disabilitata per evitare problemi di slicing
+        Player(const Player&) = delete;
+        // Spostamento
+        Player(Player&&);
 
-        /* Operator overloading */
-        Player& operator=(const Player&) = delete;              // Copy assignment
-        Player& operator=(Player&&);                            // Move assignment
+        /* Overloading operatori */
+        // Copia disabilitata per evitare problemi di slicing
+        Player& operator=(const Player&) = delete;
+        // Assegnamento di spostamento
+        Player& operator=(Player&&);
 
-        /* Destructor */
+        /* Distruttore */
         ~Player();
         
-        /* Getters */
-        unsigned int get_balance(void) const;                   // Returns balance
-        std::string get_name(void) const;                       // Returns name
-        int get_position(void);                                 // Returns player position
+        /* Funzioni getters */
+        // Ritorna il bilancio
+        int get_balance(void) const;
+        // Ritorna il nome
+        std::string get_name(void) const;
+        // Ritorna la posizione
+        int get_position(void) const;
 
-        /* Setters */
-        void set_balance(int);                                  // Set initial balance
-        void add_balance(unsigned int);                         // Add balance
-        bool sub_balance(unsigned int);                         // Subtract balance
+        /* Funzioni setters */
+        // Modifica il bilancio con un nuovo valore
+        void set_balance(int);
+        // Modifica la posizione del giocatore, quando supera
+        // il 28 (ultima casella del tabellone) la posizione
+        // viene fatta tornare a 0 in modo da far ripartire il ciclo
+        void move(const unsigned int);
 
-        void move(const unsigned int);                          // Move player
+		/* Funzioni di aiuto */
+        // Funzione che fa compiere una scelta al giocatore
+        // La scelta viene presa in input dall'utente e può ritornare:
+        //      0   Se la risposta è 'NO'
+        //      1   Se la risposta è 'SI'
+        //      2   Se vuole controllare il tabellone
+		virtual unsigned int make_choice(void) const;
 };
 
-/* Operator overloading */
-std::ostream& operator<<(std::ostream&, const Player&);         // Stream output
+/* Overloading  operatori */
+// Output sullo stream
+std::ostream& operator<<(std::ostream&, const Player&);
 
 #endif

@@ -5,12 +5,11 @@
 #define TILE_HPP
 
 #include "../include/Tile.h"
-#include "../include/Logger.h"
 
 /*
 * ----------------------- Tile implementation -----------------------
-* TODO: - check (and complete) the constructors
-        - fix cout on game mechanics
+* TODO:
+        - Controllare logica funzioni di acquisto e pernottamento
         - if player lose, remove him from the game (make stack for players)
 * -------------------------------------------------------------------
 */
@@ -73,7 +72,11 @@ std::shared_ptr<Player> Tile<EnumType>::get_owner(void) const
 template <typename EnumType>
 void Tile<EnumType>::buy_terrain(std::shared_ptr<Player> p)
 {
-    if (status == 0 && p->get_balance() >= cost_property && get_type() != " ")
+	if(get_type() == " ")
+        std::cout << p->get_name() << ", non puoi costruire su una casella angolare!\n";
+	else if(status != 0)
+		std::cout<<p->get_name() << ", non puoi costruire su questa casella!\n";
+    else if(p->get_balance() >= cost_property)
     {
         owner = p;
         int new_balance = owner->get_balance() - cost_property;
@@ -86,19 +89,19 @@ void Tile<EnumType>::buy_terrain(std::shared_ptr<Player> p)
         std::cout << str << std::endl;
     }
     else
-        std::cout << p->get_name() << ", non puoi costruire su questo terreno!\n";
+        std::cout << p->get_name() << ", non hai abbastanza fiorini per comprare questo terreno!\n";
 }
 
 template <typename EnumType>
 void Tile<EnumType>::build_house(std::shared_ptr<Player> p)
 {
-    if (!owner)
-    {
+    if(!owner)
         std::cout << "Questo terreno deve ancora essere acquistato!!\n";
-        return;
-    }
-
-    if (status == 1 && p == owner && p->get_balance() >= cost_house)
+	else if(status != 1)
+        std::cout << p->get_name() << ", non puoi costruire una casa su questo terreno!\n";
+	else if(p != owner)
+        std::cout << p->get_name() << ", non puoi costruire una casa sul terreno di un altro giocatore!\n";
+    else if(p->get_balance() >= cost_house)
     {
         int new_balance = owner->get_balance() - cost_house;
         owner->set_balance(new_balance);
@@ -109,46 +112,52 @@ void Tile<EnumType>::build_house(std::shared_ptr<Player> p)
         std::cout << str << std::endl;
     }
     else
-        std::cout << p->get_name() << ", non puoi costruire una casa su questo terreno!\n";
+        std::cout << p->get_name() << ", non hai abbastanza fiorini per costruire una casa su questo terreno!\n";
 }
 
 template <typename EnumType>
 void Tile<EnumType>::build_hotel(std::shared_ptr<Player> p)
 {
-    if (!owner)
-    {
+    if(!owner)
         std::cout << "Questo terreno deve ancora essere acquistato!!\n";
-        return;
-    }
-
-    if (status == 2 && p == owner && p->get_balance() >= cost_hotel)
+	else if(status != 2)
+        std::cout << p->get_name() << ", non puoi costruire un albergo su questo terreno!\n";
+	else if(p != owner)
+        std::cout << p->get_name() << ", non puoi costruire un albergo sul terreno di un altro giocatore!\n";
+    else if(p->get_balance() >= cost_hotel)
     {
         int new_balance = owner->get_balance() - cost_hotel;
         owner->set_balance(new_balance);
         status++;
 
-        std::string str = owner->get_name() + " ha migliorato una casa in albergo sul terreno " + get_coord();
+        std::string str = owner->get_name() + " ha costruito un albergo sul terreno " + get_coord();
         Logger::get_instance().log(str);
         std::cout << str << std::endl;
     }
     else
-        std::cout << p->get_name() << ", non puoi costruire un hotel su questo terreno!\n";
+        std::cout << p->get_name() << ", non hai abbastanza fiorini per costruire un albergo su questo terreno!\n";
 }
 
 template <typename EnumType>
 void Tile<EnumType>::pay_rent_house(std::shared_ptr<Player> p)
 {
-    if(status == 1 && p != owner)
+    if(status == 2 && p != owner)
     {
-        if(p->get_balance() < this->rent_house) {
-            std::string str = p->get_name() << " e' stato eliminato!";
+        // If player can't pay rent
+        if(p->get_balance() <= this->rent_house) {
+            // Give all his remaining money to the owner
+            owner->set_balance(owner->get_balance() + p->get_balance());
+            p->set_balance(p->get_balance() - this->rent_house);
+
+            std::string str = p->get_name() + " e' stato eliminato!";
+			// AGGIUNGERE ELIMINAZIONE
             std::cout << str << std::endl;
             Logger::get_instance().log(str);
             return;
         }
         
-        p->sub_balance(this->rent_house);
-        owner->add_balance(this->rent_house);
+        p->set_balance(p->get_balance() - this->rent_house);
+        owner->set_balance(owner->get_balance() + this->rent_house);
 
         std::string str = p->get_name() + " ha pagato " + std::to_string(this->rent_house) + " a " + owner->get_name() +
          " per pernottamento nella casella " + get_coord();
@@ -162,19 +171,20 @@ void Tile<EnumType>::pay_rent_house(std::shared_ptr<Player> p)
 template <typename EnumType>
 void Tile<EnumType>::pay_rent_hotel(std::shared_ptr<Player> p)
 {
-    if(status == 1 && p != owner)
+    if(status == 3 && p != owner)
     {
-        if(p->get_balance() < this->rent_hotel) {
-            std::string str = p->get_name() << " e' stato eliminato!";
+        if(p->get_balance() <= this->rent_hotel) {
+            std::string str = p->get_name() + " e' stato eliminato!";
             std::cout << str << std::endl;
+			// AGGIUNGERE ELIMINAZIONE
             Logger::get_instance().log(str);
             return;
         }
-        p->sub_balance(this->rent_hotel);
-        owner->add_balance(this->rent_hotel);
+        p->set_balance(p->get_balance() - this->rent_hotel);
+        owner->set_balance(owner->get_balance() + this->rent_hotel);
 
         std::string str = p->get_name() + " ha pagato " + std::to_string(this->rent_hotel) + " fiorini a " + owner->get_name() +
-         "per pernottamento nella casella " + get_coord();
+         " per pernottamento nella casella " + get_coord();
         Logger::get_instance().log(str);
         std::cout << str << std::endl;
     }
