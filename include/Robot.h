@@ -13,21 +13,22 @@ class Robot : public Player
 {
     public:
         
-        /* Constructor */
-        Robot(void);              // default
-        Robot(Robot&);            // copy
-        Robot(Robot&&);           // move
+        /* Constructors */
+        Robot(void);                                            // Default constructor
+        Robot(Robot&);                                          // Copy constructor
+        Robot(Robot&&);                                         // Move constructor
 
         /* Destructor */
         ~Robot();
         
-        /* Operator overloading */
-        Robot& operator=(const Robot&);                       // Assegnamento di copia
-        Robot& operator=(Robot&&);                            // Assegnamento di spostamento
+        /* Operators overloading */
+        Robot& operator=(const Robot&);                         // Copy assignment
+        Robot& operator=(Robot&&);                              // Move assignment
 
-        /*
-        Funzione che ritorna 0 o 1 per l'acquisto di un terreno di una casa o di un hotel.
-        */
+        /* Helper function */
+        // Function that return the robot's choice
+        // - 0 with the 75% of probability (don't buy nothing)
+        // - 1 with the 75% of probability (buy the terrain, build a house or a hotel)
         unsigned int make_choice(void) const override;
 };
 

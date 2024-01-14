@@ -45,4 +45,4 @@ enum class AngularTile : int
     RENT_HOTEL = 0,
 };
 
-#endif // CONSTANTS_H
+#endif

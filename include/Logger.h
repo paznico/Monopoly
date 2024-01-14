@@ -16,10 +16,10 @@ private:
 
 public:
     /* Constructor */
-    Logger(void);
+    Logger(void);                                           // Default
 
-    /* Functions that adds a string */
-    void log(const std::string&);
+    /* Functions */
+    void log(const std::string&);                       
     static Logger& get_instance(void);
 
     /* Destructor */

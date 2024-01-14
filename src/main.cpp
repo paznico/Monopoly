@@ -20,7 +20,7 @@ using namespace std;
 void play(GameBoard &gameBoard)
 {
     // Imposta numero massimo di turni da giocare
-    const unsigned int MAX_TURNS = 1000;
+    const unsigned int MAX_TURNS = 100;
     // Inizializza numero di turni giocati
     unsigned int turn_number = 0;
     // Ciclo principale del gioco, si ripete finchè
@@ -29,7 +29,10 @@ void play(GameBoard &gameBoard)
     while(!gameBoard.is_game_finished() && turn_number <= MAX_TURNS)
     {
         // Chiama la funzione per eseguire un turno
-        cout<<"\nTurno "<<++turn_number<<endl;
+        ++turn_number;
+        std::string str = "\nTurno " + std::to_string(turn_number) + "\n";
+        cout<<str;
+        Logger::get_instance().log(str);
         gameBoard.next_turn();
     }
     
