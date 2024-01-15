@@ -15,19 +15,22 @@ Logger::Logger(void)
 void Logger::log(const std::string& str)
 {
     if(fout.is_open())
-        fout << "- " << str << std::endl;                                                       // Print in log.txt str
+        fout << "- " << str << std::endl;                                                       // Print @param in log.txt 
     else
+        // Error if the file isn't correctly open
         std::cerr << "Impossibile scrivere sul file di log, il file non e' aperto correttamente." << std::endl;
 }
 
 Logger& Logger::get_instance(void)
 {
+    // Create an instance to have access to the class and be able to use it in multiple classes without having to create the object
     static Logger instance;
     return instance;
 }
 
 Logger::~Logger()
 {
+    // Destructor that close the output in the file
     if(fout.is_open())
         fout.close();                                                                           // Closing output
 }
