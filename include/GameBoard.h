@@ -25,17 +25,13 @@
  * vector of unique pointers to BaseTile objects, enabling a diverse
  * collection of tile types. The use of unique pointers ensures
  * effective memory management, preventing memory leaks and avoiding
- * slicing issues inherent with polymorphism. Tile generation occurs
- * in the constructor through the generate_tiles() method. The show()
- * method is then utilized to display the game board on the screen.
+ * slicing issues inherent with polymorphism. Players are stored in a
+ * deque of shared pointers to Player objects, allowing for efficient
+ * insertion and deletion of players from the game. The deque also allows
+ * for easy iteration through the players in the game, as well as
+ * random access to players. 
  * -------------------------------------------------------------------
  */
-
-/*
-	Siccome usiamo gli unique_ptr su tiles non possiamo farne la copia!
-	Ho disabilitato copia/spostamento, controllare anche voi
-	Secondo me lo spostamento bisogna farlo però non saprei come
-*/
 
 class GameBoard
 {
@@ -55,17 +51,17 @@ public:
 	GameBoard& operator=(const GameBoard&) = delete;
 	GameBoard& operator=(GameBoard&&);
 
-    /* Functions */
+    /* Member Functions */
     void find_unique(std::vector<int> pos, std::multimap<int, std::shared_ptr<Player>> players, std::vector<std::shared_ptr<Player>>& vec);
     void generate_tiles(void);
     bool is_game_finished(void) const { return this->gameFinished; };
 
     void next_turn(void);
-
-    int dice_throw(void) const;
     void action_handler(std::shared_ptr<Player>);
     void show(void);
     void show_holdings(void);
+
+    int dice_throw(void) const;
 	void get_results(void) const;
 };
 

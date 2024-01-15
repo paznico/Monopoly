@@ -8,15 +8,12 @@
 
 /*
 * ----------------------- Tile implementation -----------------------
-* TODO:
-        - Controllare logica funzioni di acquisto e pernottamento
-        - if player lose, remove him from the game (make stack for players)
 * -------------------------------------------------------------------
 */
 
 /* Constructors */
 template <typename EnumType>
-Tile<EnumType>::Tile() : status(0), owner(nullptr), coordinates("") {} // Default
+Tile<EnumType>::Tile() : status(0), owner(nullptr), coordinates("") {}      // Default
 
 template <typename EnumType>
 Tile<EnumType>::Tile(const std::string& coordinates)
@@ -27,10 +24,10 @@ Tile<EnumType>::Tile(const std::string& coordinates)
 }
 
 template <typename EnumType>
-Tile<EnumType>::Tile(const Tile &t) : status(t.status), owner(t.owner) {} // Copy
+Tile<EnumType>::Tile(const Tile &t) : status(t.status), owner(t.owner) {}   // Copy
 
 template <typename EnumType>
-Tile<EnumType>::Tile(Tile &&t) : status(t.status), owner(t.owner) // Move
+Tile<EnumType>::Tile(Tile &&t) : status(t.status), owner(t.owner)           // Move
 {
     t.status = 0;
     t.owner = nullptr;
@@ -38,7 +35,7 @@ Tile<EnumType>::Tile(Tile &&t) : status(t.status), owner(t.owner) // Move
 
 /* Operators overloading */
 template <typename EnumType>
-Tile<EnumType> &Tile<EnumType>::operator=(const Tile &t) // Copy
+Tile<EnumType> &Tile<EnumType>::operator=(const Tile &t)                    // Copy
 {
     this->status = t.status;
     this->owner = t.owner;
@@ -46,7 +43,7 @@ Tile<EnumType> &Tile<EnumType>::operator=(const Tile &t) // Copy
 }
 
 template <typename EnumType>
-Tile<EnumType> &Tile<EnumType>::operator=(Tile &&t) // Move
+Tile<EnumType> &Tile<EnumType>::operator=(Tile &&t)                         // Move
 {
     this->status = t.status;
     this->owner = t.owner;
@@ -56,12 +53,14 @@ Tile<EnumType> &Tile<EnumType>::operator=(Tile &&t) // Move
 }
 
 /* Getters */
+// Get the status of the tile ( 0 = free, 1 = owned, 2 = house, 3 = hotel )
 template <typename EnumType>
 unsigned int Tile<EnumType>::get_status(void) const
 {
     return this->status;
 }
 
+// Return the owner of the tile
 template <typename EnumType>
 std::shared_ptr<Player> Tile<EnumType>::get_owner(void) const
 {
@@ -72,10 +71,13 @@ std::shared_ptr<Player> Tile<EnumType>::get_owner(void) const
 template <typename EnumType>
 void Tile<EnumType>::buy_terrain(std::shared_ptr<Player> p)
 {
+    // If angular tile, the player can't buy it
 	if(get_type() == " ")
         std::cout << p->get_name() << ", non puoi costruire su una casella angolare!\n";
+    // If the tile is not free, the player can't buy it
 	else if(status != 0)
 		std::cout<<p->get_name() << ", non puoi costruire su questa casella!\n";
+    // If the player has enough money, he can buy the tile
     else if(p->get_balance() >= cost_property)
     {
         owner = p;
@@ -95,14 +97,20 @@ void Tile<EnumType>::buy_terrain(std::shared_ptr<Player> p)
 template <typename EnumType>
 void Tile<EnumType>::build_house(std::shared_ptr<Player> p)
 {
+    // If the tile is not owned, the player can't build a house
     if(!owner)
         std::cout << "Questo terreno deve ancora essere acquistato!!\n";
+    // If the tile is not owned, the player can't build a house
 	else if(status != 1)
         std::cout << p->get_name() << ", non puoi costruire una casa su questo terreno!\n";
+    // If the player is not the owner, he can't build a house
 	else if(p != owner)
         std::cout << p->get_name() << ", non puoi costruire una casa sul terreno di un altro giocatore!\n";
+    // If the player has enough money, he can build a house
     else if(p->get_balance() >= cost_house)
     {
+        // Set the new balance for the owner 
+        // and update the status of the tile
         int new_balance = owner->get_balance() - cost_house;
         owner->set_balance(new_balance);
         status++;
@@ -118,14 +126,20 @@ void Tile<EnumType>::build_house(std::shared_ptr<Player> p)
 template <typename EnumType>
 void Tile<EnumType>::build_hotel(std::shared_ptr<Player> p)
 {
+    // If the tile is not owned, the player can't build a hotel
     if(!owner)
         std::cout << "Questo terreno deve ancora essere acquistato!!\n";
+    // If the tile is not owned, the player can't build a hotel
 	else if(status != 2)
         std::cout << p->get_name() << ", non puoi costruire un albergo su questo terreno!\n";
+    // If the player is not the owner, he can't build a hotel
 	else if(p != owner)
         std::cout << p->get_name() << ", non puoi costruire un albergo sul terreno di un altro giocatore!\n";
+    // If the player has enough money, he can build a hotel
     else if(p->get_balance() >= cost_hotel)
     {
+        // Set the new balance for the owner 
+        // and update the status of the tile
         int new_balance = owner->get_balance() - cost_hotel;
         owner->set_balance(new_balance);
         status++;
@@ -141,21 +155,23 @@ void Tile<EnumType>::build_hotel(std::shared_ptr<Player> p)
 template <typename EnumType>
 void Tile<EnumType>::pay_rent_house(std::shared_ptr<Player> p)
 {
+    // If the player is not the owner and the tile 
+    // has a house, the player must pay the rent
     if(status == 2 && p != owner)
     {
         // If player can't pay rent
         if(p->get_balance() <= this->rent_house) {
-            // Give all his remaining money to the owner
+            // Give all his remaining money to the owner of the tile
             owner->set_balance(owner->get_balance() + p->get_balance());
             p->set_balance(p->get_balance() - this->rent_house);
 
             std::string str = p->get_name() + " e' stato eliminato!";
-			// AGGIUNGERE ELIMINAZIONE
             std::cout << str << std::endl;
             Logger::get_instance().log(str);
             return;
         }
         
+        // Set the new balance for the player and the owner
         p->set_balance(p->get_balance() - this->rent_house);
         owner->set_balance(owner->get_balance() + this->rent_house);
 
@@ -171,15 +187,18 @@ void Tile<EnumType>::pay_rent_house(std::shared_ptr<Player> p)
 template <typename EnumType>
 void Tile<EnumType>::pay_rent_hotel(std::shared_ptr<Player> p)
 {
+    // If the player is not the owner and the tile 
+    // has an hotel, the player must pay the rent
     if(status == 3 && p != owner)
     {
         if(p->get_balance() <= this->rent_hotel) {
             std::string str = p->get_name() + " e' stato eliminato!";
             std::cout << str << std::endl;
-			// AGGIUNGERE ELIMINAZIONE
             Logger::get_instance().log(str);
             return;
         }
+
+        // Set the new balance for the player and the owner
         p->set_balance(p->get_balance() - this->rent_hotel);
         owner->set_balance(owner->get_balance() + this->rent_hotel);
 
@@ -200,6 +219,8 @@ void Tile<EnumType>::reset(void)
 }
 
 /* Utility Methods */
+
+// Return the type of the tile (cheap, standard, luxury)
 template <typename EnumType>
 std::string Tile<EnumType>::get_type(void) const
 {

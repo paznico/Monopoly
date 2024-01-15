@@ -6,36 +6,41 @@
 
 /*
  * ------------------- GameBoard implementation ---------------------
- * TODO: DEBUGG sostituire i 5 fiorini dal via con 20
- * 			Controllare logica action handler
  * -------------------------------------------------------------------
  */
 
 /*
-    Siccome usiamo gli unique_ptr su tiles non possiamo farne la copia!
-    Ho disabilitato copia/spostamento, se volete controllare anche voi
-    Lo spostamento secondo me va fatto ma non saprei come
+* GameBoard Constructor
+* 
 */
-
 GameBoard::GameBoard(std::shared_ptr<Player> p1, std::shared_ptr<Player> p2, std::shared_ptr<Player> p3, std::shared_ptr<Player> p4)
 {
     std::vector<std::shared_ptr<Player>> players_order = std::vector<std::shared_ptr<Player>>(4);
+
+    // Order the players based on the dice throw (descending order of the dice throw)
     find_unique({3, 2, 1, 0}, std::multimap<int, std::shared_ptr<Player>>{{dice_throw(), p1}, {dice_throw(), p2}, {dice_throw(), p3}, {dice_throw(), p4}}, players_order);
 
+    // Print the order of the players
     std::cout << "Ordine d'inizio:" << std::endl;
     for (const auto &entry : players_order)
     {
         std::cout << "Posizione: " << entry->get_name() << std::endl;
         this->players.push_back(entry);
     }
+
+    // Generate the gameboard tiles
     this->generate_tiles();
 }
 
+/*
+* Function that handles the reordering of the players based on the dice throw
+* to determine the starting order of the players at the beginning of the game
+*/
 void GameBoard::find_unique(std::vector<int> pos, std::multimap<int, std::shared_ptr<Player>> players, std::vector<std::shared_ptr<Player>> &vec)
 {
+    // Base case: if the multimap is empty, return
     if (pos.empty())
         return;
-
     std::multimap<int, std::shared_ptr<Player>> tmp = players;
 
     std::string player_throw_output = "";
@@ -50,8 +55,10 @@ void GameBoard::find_unique(std::vector<int> pos, std::multimap<int, std::shared
     {
         player_throw_output += entry.second->get_name() + " ha tirato " + std::to_string(entry.first) + "\n";
 
+        // Check if the player's dice throw is unique
         if (players.count(entry.first) == 1)
         {
+            // If it is, add the player to the vector and remove it from the multimap
             player_order_output += entry.second->get_name() + " e' in posizione " + std::to_string(pos[count] + 1) + "\n";
             vec[pos[count]] = entry.second;
             tmp.erase(entry.first);
@@ -65,6 +72,7 @@ void GameBoard::find_unique(std::vector<int> pos, std::multimap<int, std::shared
 
     players.clear();
 
+    // If there are players with the same dice throw, rethrow the dice and call the function again
     if (!tmp.empty())
     {
         for (const auto &entry : tmp)
@@ -117,14 +125,15 @@ void GameBoard::next_turn(void)
     // Check if the player has passed the start
     if (p->get_position() < old_player_pos)
     {
-        // DEBUG, deve tornare a 20
-        p->set_balance(p->get_balance() + 5);
+        p->set_balance(p->get_balance() + 20);
         std::string str = p->get_name() + " e' passato per il via e ha ritirato 20 fiorini!";
         std::cout << str << std::endl;
         Logger::get_instance().log(str);
     }
 
+    // Handle the action of the player on the tile he landed on
     action_handler(p);
+
     str = p->get_name() + " ha finito il turno \n";
     std::cout << str;
     Logger::get_instance().log(str);
@@ -134,6 +143,8 @@ void GameBoard::next_turn(void)
     this->players.push_back(p);
 }
 
+// Function that throws the dice 
+// and returns the sum of the two dice
 int GameBoard::dice_throw(void) const
 {
     int dice1 = rand() % 6 + 1;
@@ -143,6 +154,7 @@ int GameBoard::dice_throw(void) const
 
 void GameBoard::action_handler(std::shared_ptr<Player> p)
 {
+    // Get the tile on which the player is
     int pos = p->get_position();
     auto tile = this->tiles[pos].get();
     int status = tile->get_status();
@@ -193,14 +205,17 @@ void GameBoard::action_handler(std::shared_ptr<Player> p)
             }
             else
             {
+                // Pay the rent to the owner of the tile
                 if (status == 2)
                     tile->pay_rent_house(p);
                 else if (status == 3)
                     tile->pay_rent_hotel(p);
                 end_turn = true;
 
+                // Check if the player is bankrupt
                 if (p->get_balance() <= 0)
                 {
+                    // Remove the player from the game
                     this->players.pop_front();
                     return;
                 }
@@ -217,13 +232,17 @@ void GameBoard::action_handler(std::shared_ptr<Player> p)
     }
 }
 
+/*
+* Function that generates the tiles 
+* of the gameboard in a random order
+*/
 void GameBoard::generate_tiles(void)
 {
     int max_cheap = 8, max_standard = 10, max_luxury = 6;
 
     for (int x = 0; x < tiles.size(); x++)
     {
-        int random = 0; // 0= angular, 1 = cheap, 2 = standard, 3 = luxury
+        int random = 0; // 0 = angular, 1 = cheap, 2 = standard, 3 = luxury
         do
         {
             if (x % 7 != 0)
@@ -288,6 +307,9 @@ void GameBoard::generate_tiles(void)
     }
 }
 
+/*
+* Function that prints the gameboard
+*/
 void GameBoard::show()
 {
     int n = 8;
@@ -368,6 +390,9 @@ void GameBoard::show()
     std::cout << "\n";
 }
 
+/*
+* Function that prints the results of the game
+*/
 void GameBoard::get_results(void) const
 {
 	std::vector<std::shared_ptr<Player>> win_order = std::vector<std::shared_ptr<Player>>();

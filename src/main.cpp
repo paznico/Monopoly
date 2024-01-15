@@ -20,13 +20,13 @@ using namespace std;
 void play(GameBoard &gameBoard)
 {
     // Imposta numero massimo di turni da giocare
-    const unsigned int MAX_TURNS = 100;
+    const unsigned int MAX_TURNS = 500;
     // Inizializza numero di turni giocati
     unsigned int turn_number = 0;
     // Ciclo principale del gioco, si ripete finchè
     // ci sono giocatori in gioco e finchè non viene
     // superato il limite di turni
-    while(!gameBoard.is_game_finished() && turn_number <= MAX_TURNS)
+    while(!gameBoard.is_game_finished() && turn_number < MAX_TURNS)
     {
         // Chiama la funzione per eseguire un turno
         ++turn_number;
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
         // Se sono troppo pochi stampa messaggio di errore ed esempio di utilizzo
         cout<<"[!] Numero di argomenti passati da terminale insufficienti\n";
         cout<<"Esempi:\n\t$ ./monopoly human";
-        cout<<"\n\t$ ./monopoly\n";
+        cout<<"\n\t$ ./monopoly computer\n";
         // Ed esce
         return -1;
     }
@@ -129,25 +129,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        // Chiedi nome al giocatore
-        // Il nome deve essere compreso tra 2 e 20 caratteri
-        string name;
-		bool ask = false;
-		while(!ask)
-        {
-            cout<<"Inserisci nome giocatore umano:\n>>> ";
-            cin>>name;
-			if(name.length() <= 2)
-				cout<<"\nNome troppo corto!\n\n";
-			else if(name.length() >= 20)
-				cout<<"\nNome troppo lungo!\n\n";
-			else
-				ask = true;
-        }
-		while(name.length() < 2 || name.length() > 10);
-
         // 1 giocatore e 3 robot
-        p1 = make_shared<Player>(name);
+        p1 = make_shared<Player>("Giocatore 1");
         p2 = make_shared<Robot>();
         p3 = make_shared<Robot>();
         p4 = make_shared<Robot>();

@@ -1,8 +1,12 @@
+#
+# Autore: Niccolò Pasetto
+#
+
 # Controlla versione usata da CMake
 cmake_minimum_required(VERSION 3.8)
 
 # Controllo versione usata C++
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Imposta nome del progetto
@@ -18,12 +22,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 include_directories(include)
 
 # Imposta opzioni di compilazione
-# Usa le opzioni di ottimizzazione
+# Usa opzioni di compilazione ottimizzate per il compilatore
 if(CMAKE_BUILD_TYPE MATCHES Release)
     add_compile_options(/O2)
 endif()
 
-# Crea una libreria unica con diversi file sorgente
+# Crea le librerie statiche per i diversi file sorgente
 add_library(logger STATIC src/Logger.cpp)
 add_library(player STATIC src/Player.cpp)
 add_library(robot STATIC src/Robot.cpp)
@@ -32,5 +36,5 @@ add_library(gameboard STATIC src/GameBoard.cpp)
 # Crea il file eseguibile
 add_executable(${PROJECT_NAME} src/main.cpp)
 
-# Crea link fra libreria e file eseguibile
+# Crea link fra librerie e file eseguibile
 target_link_libraries(${PROJECT_NAME} player robot gameboard logger)

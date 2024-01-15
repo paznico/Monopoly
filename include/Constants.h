@@ -6,7 +6,7 @@
 
 /*
  * Define all tiles constants as part
- * of the specific enum <Type>Tile
+ * of the their specific enum <Type>Tile
  */
 
 enum class CheapTile : int

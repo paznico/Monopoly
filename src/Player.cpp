@@ -13,7 +13,7 @@ Player::Player(void)
 
 Player::Player(std::string n)
 {
-    this->balance = 100;
+    this->balance = this->initial_balance;
     this->name = n;
     this->position = 0;
 }
